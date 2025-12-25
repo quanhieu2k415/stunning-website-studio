@@ -27,9 +27,9 @@ const Footer = () => {
   };
 
   const socials = [
-    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Facebook, href: "https://www.facebook.com/congnghehaiantn", label: "Facebook" },
     { icon: Youtube, href: "#", label: "Youtube" },
-    { icon: MessageCircle, href: "#", label: "Zalo" },
+    { icon: MessageCircle, href: "https://zalo.me/0978998811", label: "Zalo" },
   ];
 
   return (
