@@ -1,5 +1,6 @@
 import { ArrowRight, Shield, Zap, Award } from "lucide-react";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
 
 const HeroSection = () => {
@@ -47,12 +48,16 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 mb-12 animate-fade-up" style={{ animationDelay: "0.3s" }}>
-            <Button size="lg" variant="hero">
-              Xem sản phẩm
-              <ArrowRight className="w-5 h-5" />
+            <Button size="lg" variant="hero" asChild>
+              <Link to="/san-pham">
+                Xem sản phẩm
+                <ArrowRight className="w-5 h-5" />
+              </Link>
             </Button>
-            <Button size="lg" variant="hero-outline">
-              Tư vấn miễn phí
+            <Button size="lg" variant="hero-outline" asChild>
+              <Link to="/lien-he">
+                Tư vấn miễn phí
+              </Link>
             </Button>
           </div>
 
