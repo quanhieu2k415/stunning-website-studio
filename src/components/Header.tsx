@@ -31,9 +31,9 @@ const Header = () => {
               <Phone className="w-4 h-4" />
               <span className="font-medium">0978 998 811</span>
             </a>
-            <a href="mailto:info@haian.vn" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <a href="mailto:congnghehaiantn@gmail.com" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Mail className="w-4 h-4" />
-              <span>info@haian.vn</span>
+              <span>congnghehaiantn@gmail.com</span>
             </a>
           </div>
           <div className="hidden md:flex items-center gap-2">
@@ -49,9 +49,9 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
             <img src={logo} alt="Hai An Technology" className="w-12 h-12 rounded-xl object-cover" />
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-foreground leading-tight">HAI AN</h1>
-              <p className="text-xs text-muted-foreground font-medium tracking-wider">TECHNOLOGY</p>
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground leading-tight">HAI AN</h1>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium tracking-wider">TECHNOLOGY</p>
             </div>
           </Link>
 
