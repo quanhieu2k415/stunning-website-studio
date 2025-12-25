@@ -27,28 +27,30 @@ const ContactSection = () => {
   return (
     <section id="contact" className="py-20 bg-muted/50">
       <div className="container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact info */}
-          <div>
-            <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
-              Liên hệ với chúng tôi
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Hãy Để Chúng Tôi <span className="text-gradient">Hỗ Trợ</span> Bạn
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Đội ngũ tư vấn viên chuyên nghiệp luôn sẵn sàng hỗ trợ bạn 24/7. 
-              Liên hệ ngay để được tư vấn miễn phí và nhận báo giá tốt nhất!
-            </p>
+        {/* Section header */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
+            Liên hệ với chúng tôi
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Hãy Để Chúng Tôi <span className="text-gradient">Hỗ Trợ</span> Bạn
+          </h2>
+          <p className="text-muted-foreground text-lg">
+            Đội ngũ tư vấn viên chuyên nghiệp luôn sẵn sàng hỗ trợ bạn 24/7
+          </p>
+        </div>
 
-            <div className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Contact info & Map */}
+          <div>
+            <div className="space-y-4 mb-8">
               {contactInfo.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
                   className="flex items-start gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-card transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors flex-shrink-0">
                     <item.icon className="w-5 h-5 text-primary group-hover:text-primary-foreground" />
                   </div>
                   <div>
@@ -57,6 +59,21 @@ const ContactSection = () => {
                   </div>
                 </a>
               ))}
+            </div>
+
+            {/* Google Maps */}
+            <div className="rounded-2xl overflow-hidden border border-border shadow-card">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3710.8547382945847!2d105.8386!3d21.5925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135274b0a7b7e6f%3A0x4b8b7f3b5f7b7e6f!2zR2lhIFPDoG5nLCBUaMOhaSBOZ3V5w6pu!5e0!3m2!1svi!2s!4v1703500000000!5m2!1svi!2s"
+                width="100%"
+                height="280"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Vị trí Hai An Technology - Gia Sàng, Thái Nguyên"
+                className="grayscale hover:grayscale-0 transition-all duration-500"
+              />
             </div>
           </div>
 
