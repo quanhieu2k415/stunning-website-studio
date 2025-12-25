@@ -1,5 +1,6 @@
 import { Star, ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 
 const products = [
   {
@@ -75,7 +76,7 @@ const FeaturedProducts = () => {
               className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 border border-border"
             >
               {/* Image */}
-              <div className="relative aspect-square overflow-hidden bg-muted">
+              <Link to={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-muted">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -87,7 +88,7 @@ const FeaturedProducts = () => {
                   </span>
                 )}
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300" />
-              </div>
+              </Link>
 
               {/* Content */}
               <div className="p-5">
@@ -101,9 +102,11 @@ const FeaturedProducts = () => {
                 </div>
 
                 {/* Name */}
-                <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors h-12">
-                  {product.name}
-                </h3>
+                <Link to={`/product/${product.id}`}>
+                  <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors h-12">
+                    {product.name}
+                  </h3>
+                </Link>
 
                 {/* Price */}
                 <div className="flex items-baseline gap-2 mb-4">
