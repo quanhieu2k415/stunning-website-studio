@@ -1,4 +1,5 @@
 import { Facebook, Youtube, MessageCircle, Phone } from "lucide-react";
+import logo from "@/assets/logo.jpg";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -38,9 +39,7 @@ const Footer = () => {
           {/* Company info */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">HA</span>
-              </div>
+              <img src={logo} alt="Hai An Technology" className="w-12 h-12 rounded-xl object-cover" />
               <div>
                 <h3 className="text-xl font-bold">HAI AN</h3>
                 <p className="text-xs text-primary-foreground/60 tracking-wider">TECHNOLOGY</p>
