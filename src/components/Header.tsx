@@ -1,17 +1,24 @@
 import { useState } from "react";
 import { Menu, X, Phone, Mail, MapPin, Search } from "lucide-react";
 import { Button } from "./ui/button";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const navLinks = [
-    { name: "Trang chủ", href: "#home" },
-    { name: "Sản phẩm", href: "#products" },
-    { name: "Dịch vụ", href: "#services" },
-    { name: "Về chúng tôi", href: "#about" },
-    { name: "Liên hệ", href: "#contact" },
+    { name: "Trang chủ", href: "/" },
+    { name: "Sản phẩm", href: "/san-pham" },
+    { name: "Dịch vụ", href: "/dich-vu" },
+    { name: "Giới thiệu", href: "/gioi-thieu" },
+    { name: "Liên hệ", href: "/lien-he" },
   ];
+
+  const isActive = (href: string) => {
+    if (href === "/") return location.pathname === "/";
+    return location.pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -39,7 +46,7 @@ const Header = () => {
       <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md shadow-card border-b border-border">
         <div className="container flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#home" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-glow">
               <span className="text-primary-foreground font-bold text-xl">HA</span>
             </div>
@@ -47,18 +54,22 @@ const Header = () => {
               <h1 className="text-xl font-bold text-foreground leading-tight">HAI AN</h1>
               <p className="text-xs text-muted-foreground font-medium tracking-wider">TECHNOLOGY</p>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
-                className="px-4 py-2 text-foreground/80 hover:text-primary font-medium transition-colors rounded-lg hover:bg-primary/5"
+                to={link.href}
+                className={`px-4 py-2 font-medium transition-colors rounded-lg ${
+                  isActive(link.href)
+                    ? "text-primary bg-primary/10"
+                    : "text-foreground/80 hover:text-primary hover:bg-primary/5"
+                }`}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -73,8 +84,8 @@ const Header = () => {
               <Search className="absolute left-3 w-4 h-4 text-muted-foreground" />
             </div>
             
-            <Button size="sm" className="hidden sm:flex">
-              Liên hệ ngay
+            <Button size="sm" className="hidden sm:flex" asChild>
+              <Link to="/lien-he">Liên hệ ngay</Link>
             </Button>
 
             {/* Mobile menu button */}
@@ -92,17 +103,23 @@ const Header = () => {
           <div className="lg:hidden bg-card border-t border-border animate-fade-in">
             <nav className="container py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="px-4 py-3 text-foreground hover:text-primary hover:bg-primary/5 font-medium rounded-lg transition-colors"
+                  className={`px-4 py-3 font-medium rounded-lg transition-colors ${
+                    isActive(link.href)
+                      ? "text-primary bg-primary/10"
+                      : "text-foreground hover:text-primary hover:bg-primary/5"
+                  }`}
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
               <div className="pt-4 border-t border-border mt-2">
-                <Button className="w-full">Liên hệ ngay</Button>
+                <Button className="w-full" asChild>
+                  <Link to="/lien-he" onClick={() => setIsMenuOpen(false)}>Liên hệ ngay</Link>
+                </Button>
               </div>
             </nav>
           </div>
