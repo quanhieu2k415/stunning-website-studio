@@ -19,9 +19,9 @@ const Header = () => {
       <div className="bg-gradient-primary text-primary-foreground py-2">
         <div className="container flex flex-wrap justify-between items-center text-sm gap-2">
           <div className="flex items-center gap-6 flex-wrap">
-            <a href="tel:0932333000" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <a href="tel:0978998811" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Phone className="w-4 h-4" />
-              <span className="font-medium">0932 333 000</span>
+              <span className="font-medium">0978 998 811</span>
             </a>
             <a href="mailto:info@haian.vn" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Mail className="w-4 h-4" />
@@ -30,7 +30,7 @@ const Header = () => {
           </div>
           <div className="hidden md:flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            <span>Thái Nguyên, Việt Nam</span>
+            <span>Tổ dân phố Cam Giá 2, P. Gia Sàng, TP. Thái Nguyên</span>
           </div>
         </div>
       </div>

@@ -96,7 +96,7 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-5">Hotline tư vấn</h4>
             <a
-              href="tel:0932333000"
+              href="tel:0978998811"
               className="inline-flex items-center gap-3 px-5 py-4 bg-primary rounded-xl hover:bg-primary/90 transition-colors group"
             >
               <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center animate-pulse-glow">
@@ -104,7 +104,7 @@ const Footer = () => {
               </div>
               <div>
                 <p className="text-sm text-primary-foreground/80">Gọi ngay</p>
-                <p className="text-xl font-bold">0932 333 000</p>
+                <p className="text-xl font-bold">0978 998 811</p>
               </div>
             </a>
             <p className="text-sm text-primary-foreground/60 mt-4">
