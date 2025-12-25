@@ -3,7 +3,7 @@ import { Phone, MessageCircle } from "lucide-react";
 const FloatingButtons = () => {
   const phoneNumber = "0978998811";
   const zaloLink = `https://zalo.me/${phoneNumber}`;
-  const facebookLink = "https://facebook.com/haiantechnology";
+  const facebookLink = "https://www.facebook.com/congnghehaiantn";
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
