@@ -1,0 +1,430 @@
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight, Star, ShoppingCart, Phone, Shield, Truck, RotateCcw, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
+// Mock product data
+const products = {
+  "1": {
+    id: "1",
+    name: "Camera IP Hikvision DS-2CD1027G0-L",
+    price: "1.650.000",
+    originalPrice: "1.890.000",
+    images: [
+      "https://images.unsplash.com/photo-1580981454274-cb8be8ba3b86?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop",
+    ],
+    rating: 4.8,
+    reviews: 124,
+    badge: "Bán chạy",
+    category: "Camera giám sát",
+    brand: "Hikvision",
+    description: "Camera IP Hikvision DS-2CD1027G0-L là dòng camera ColorVu với khả năng ghi hình màu 24/7, ngay cả trong điều kiện ánh sáng yếu. Với độ phân giải 2MP Full HD 1080P, camera mang đến hình ảnh sắc nét và chi tiết. Thiết kế chống nước IP67 phù hợp lắp đặt ngoài trời.",
+    features: [
+      "Hình ảnh màu 24/7 với công nghệ ColorVu",
+      "Độ phân giải 2MP Full HD 1080P",
+      "Ống kính cố định 2.8mm/4mm",
+      "Hỗ trợ PoE, tiết kiệm dây nguồn",
+      "Chống nước IP67, lắp đặt ngoài trời",
+      "Hỗ trợ khe cắm thẻ nhớ microSD lên đến 256GB",
+    ],
+    specs: {
+      "Độ phân giải": "2MP (1920 x 1080)",
+      "Ống kính": "2.8mm / 4mm cố định",
+      "Góc nhìn": "107° (2.8mm) / 87° (4mm)",
+      "Tầm xa hồng ngoại": "30m",
+      "Chuẩn nén": "H.265+ / H.265 / H.264+ / H.264",
+      "Nguồn điện": "12V DC / PoE (802.3af)",
+      "Chống nước": "IP67",
+      "Nhiệt độ hoạt động": "-30°C đến 60°C",
+      "Kích thước": "Φ70mm × 155mm",
+      "Trọng lượng": "450g",
+    },
+    warranty: "24 tháng",
+    inStock: true,
+  },
+  "2": {
+    id: "2",
+    name: "Máy Chấm Công Vân Tay RONALD JACK X628-C",
+    price: "2.850.000",
+    originalPrice: "3.200.000",
+    images: [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=800&fit=crop",
+    ],
+    rating: 4.9,
+    reviews: 89,
+    badge: "Mới",
+    category: "Máy chấm công",
+    brand: "Ronald Jack",
+    description: "Máy chấm công vân tay RONALD JACK X628-C là thiết bị chấm công hiện đại với khả năng nhận diện vân tay nhanh chóng và chính xác. Hỗ trợ kết nối TCP/IP và USB, dễ dàng tích hợp với phần mềm quản lý nhân sự. Màn hình LCD màu 2.8 inch hiển thị rõ ràng.",
+    features: [
+      "Dung lượng 3.000 vân tay, 100.000 bản ghi",
+      "Nhận diện vân tay dưới 0.5 giây",
+      "Màn hình LCD màu 2.8 inch",
+      "Kết nối TCP/IP, USB, RS232/485",
+      "Phần mềm chấm công tiếng Việt miễn phí",
+      "Hỗ trợ xuất báo cáo Excel",
+    ],
+    specs: {
+      "Dung lượng vân tay": "3.000 mẫu",
+      "Dung lượng bản ghi": "100.000 bản ghi",
+      "Màn hình": "LCD màu 2.8 inch TFT",
+      "Giao tiếp": "TCP/IP, USB, RS232/485",
+      "Tốc độ nhận diện": "< 0.5 giây",
+      "Tỷ lệ lỗi FAR": "< 0.0001%",
+      "Tỷ lệ lỗi FRR": "< 0.1%",
+      "Nguồn điện": "DC 5V",
+      "Nhiệt độ hoạt động": "0°C đến 45°C",
+      "Kích thước": "188 x 140 x 35mm",
+    },
+    warranty: "12 tháng",
+    inStock: true,
+  },
+  "3": {
+    id: "3",
+    name: "Khóa Cửa Thông Minh SAMSUNG SHP-DP609",
+    price: "12.500.000",
+    originalPrice: "14.900.000",
+    images: [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1580981454274-cb8be8ba3b86?w=800&h=800&fit=crop",
+    ],
+    rating: 5.0,
+    reviews: 56,
+    badge: "Hot",
+    category: "Kiểm soát ra vào",
+    brand: "Samsung",
+    description: "Khóa cửa thông minh SAMSUNG SHP-DP609 với thiết kế sang trọng, hiện đại. Hỗ trợ 4 phương thức mở khóa: vân tay, mã số, thẻ từ và chìa khóa cơ. Tích hợp công nghệ chống đột nhập và cảnh báo xâm nhập thông minh.",
+    features: [
+      "4 phương thức mở khóa: Vân tay, mã số, thẻ từ, chìa khóa",
+      "Dung lượng 100 vân tay, 30 mã số",
+      "Công nghệ chống đột nhập",
+      "Cảnh báo xâm nhập thông minh",
+      "Pin AA tiêu chuẩn, sử dụng 12 tháng",
+      "Thiết kế sang trọng, chống nước IP55",
+    ],
+    specs: {
+      "Dung lượng vân tay": "100 mẫu",
+      "Dung lượng mã số": "30 mã",
+      "Dung lượng thẻ từ": "20 thẻ",
+      "Màn hình": "Màn hình cảm ứng LED",
+      "Nguồn điện": "4 pin AA (12 tháng)",
+      "Nguồn dự phòng": "9V DC",
+      "Chống nước": "IP55",
+      "Vật liệu": "Hợp kim nhôm cao cấp",
+      "Kích thước": "78 x 380 x 22mm",
+      "Trọng lượng": "3.2kg",
+    },
+    warranty: "24 tháng",
+    inStock: true,
+  },
+  "4": {
+    id: "4",
+    name: "Đầu Ghi Hình 8 Kênh Hikvision DS-7108NI",
+    price: "3.200.000",
+    originalPrice: "3.800.000",
+    images: [
+      "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1580981454274-cb8be8ba3b86?w=800&h=800&fit=crop",
+    ],
+    rating: 4.7,
+    reviews: 78,
+    badge: null,
+    category: "Đầu ghi hình",
+    brand: "Hikvision",
+    description: "Đầu ghi hình 8 kênh Hikvision DS-7108NI hỗ trợ camera IP lên đến 4MP. Tích hợp công nghệ H.265+ tiết kiệm dung lượng ổ cứng. Hỗ trợ 1 ổ cứng SATA lên đến 6TB, phù hợp cho gia đình và văn phòng nhỏ.",
+    features: [
+      "8 kênh camera IP, độ phân giải tối đa 4MP",
+      "Công nghệ nén H.265+ tiết kiệm 80% dung lượng",
+      "Hỗ trợ 1 ổ cứng SATA lên đến 6TB",
+      "Xem từ xa qua điện thoại và máy tính",
+      "Hỗ trợ tìm kiếm thông minh",
+      "Cổng HDMI và VGA xuất hình đồng thời",
+    ],
+    specs: {
+      "Số kênh": "8 kênh IP",
+      "Độ phân giải ghi hình": "Tối đa 4MP",
+      "Chuẩn nén": "H.265+ / H.265 / H.264+ / H.264",
+      "Ổ cứng": "1 SATA, tối đa 6TB",
+      "Băng thông": "80Mbps đầu vào, 60Mbps đầu ra",
+      "Cổng xuất hình": "1 HDMI, 1 VGA",
+      "Cổng mạng": "1 RJ45 100Mbps",
+      "Nguồn điện": "DC 48V",
+      "Kích thước": "260 x 225 x 48mm",
+      "Trọng lượng": "0.9kg (không ổ cứng)",
+    },
+    warranty: "24 tháng",
+    inStock: true,
+  },
+};
+
+const ProductDetail = () => {
+  const { id } = useParams();
+  const product = products[id as keyof typeof products];
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-4">Không tìm thấy sản phẩm</h1>
+            <Link to="/">
+              <Button>Về trang chủ</Button>
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const nextImage = () => {
+    setSelectedImage((prev) => (prev + 1) % product.images.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      
+      <main className="flex-1">
+        {/* Breadcrumb */}
+        <div className="bg-muted/50 py-4">
+          <div className="container">
+            <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Link to="/" className="hover:text-primary transition-colors">Trang chủ</Link>
+              <span>/</span>
+              <span className="hover:text-primary transition-colors cursor-pointer">{product.category}</span>
+              <span>/</span>
+              <span className="text-foreground font-medium">{product.name}</span>
+            </nav>
+          </div>
+        </div>
+
+        {/* Product Info */}
+        <section className="py-12">
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Image Gallery */}
+              <div>
+                {/* Main Image */}
+                <div className="relative aspect-square bg-card rounded-2xl overflow-hidden border border-border mb-4 group">
+                  <img
+                    src={product.images[selectedImage]}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {product.badge && (
+                    <span className="absolute top-4 left-4 px-4 py-1.5 bg-primary text-primary-foreground text-sm font-semibold rounded-full">
+                      {product.badge}
+                    </span>
+                  )}
+                  
+                  {/* Navigation arrows */}
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-card/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-card"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-card/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-card"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Thumbnails */}
+                <div className="flex gap-3 overflow-x-auto pb-2">
+                  {product.images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(index)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                        selectedImage === index
+                          ? "border-primary shadow-glow"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <img src={image} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Product Details */}
+              <div>
+                <div className="mb-4">
+                  <span className="text-sm text-muted-foreground">{product.brand}</span>
+                </div>
+                
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                  {product.name}
+                </h1>
+
+                {/* Rating */}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-5 h-5 ${
+                          i < Math.floor(product.rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "fill-muted text-muted"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {product.rating} ({product.reviews} đánh giá)
+                  </span>
+                </div>
+
+                {/* Price */}
+                <div className="flex items-baseline gap-4 mb-6">
+                  <span className="text-3xl font-bold text-primary">{product.price}₫</span>
+                  <span className="text-xl text-muted-foreground line-through">{product.originalPrice}₫</span>
+                  <span className="px-2 py-1 bg-destructive/10 text-destructive text-sm font-medium rounded">
+                    -{Math.round((1 - parseInt(product.price.replace(/\./g, "")) / parseInt(product.originalPrice.replace(/\./g, ""))) * 100)}%
+                  </span>
+                </div>
+
+                {/* Description */}
+                <p className="text-muted-foreground leading-relaxed mb-6">
+                  {product.description}
+                </p>
+
+                {/* Stock status */}
+                <div className="flex items-center gap-2 mb-6">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-green-600 font-medium">Còn hàng</span>
+                </div>
+
+                {/* Quantity */}
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="font-medium text-foreground">Số lượng:</span>
+                  <div className="flex items-center border border-border rounded-lg">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
+                    >
+                      -
+                    </button>
+                    <span className="w-12 text-center font-medium">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-10 h-10 flex items-center justify-center hover:bg-muted transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                  <Button size="lg" className="flex-1">
+                    <ShoppingCart className="w-5 h-5" />
+                    Thêm vào giỏ hàng
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <a href="tel:0978998811">
+                      <Phone className="w-5 h-5" />
+                      Gọi đặt hàng
+                    </a>
+                  </Button>
+                </div>
+
+                {/* Benefits */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6 bg-muted/50 rounded-2xl">
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-8 h-8 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Bảo hành</p>
+                      <p className="text-muted-foreground text-sm">{product.warranty}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Truck className="w-8 h-8 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Miễn phí ship</p>
+                      <p className="text-muted-foreground text-sm">Đơn từ 1 triệu</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <RotateCcw className="w-8 h-8 text-primary" />
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Đổi trả</p>
+                      <p className="text-muted-foreground text-sm">Trong 7 ngày</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features & Specs */}
+        <section className="py-12 bg-muted/50">
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Features */}
+              <div className="bg-card rounded-2xl p-8 shadow-card border border-border">
+                <h2 className="text-2xl font-bold text-foreground mb-6">Tính năng nổi bật</h2>
+                <ul className="space-y-4">
+                  {product.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="text-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Specifications */}
+              <div className="bg-card rounded-2xl p-8 shadow-card border border-border">
+                <h2 className="text-2xl font-bold text-foreground mb-6">Thông số kỹ thuật</h2>
+                <div className="space-y-3">
+                  {Object.entries(product.specs).map(([key, value], index) => (
+                    <div
+                      key={key}
+                      className={`flex justify-between py-3 ${
+                        index !== Object.entries(product.specs).length - 1
+                          ? "border-b border-border"
+                          : ""
+                      }`}
+                    >
+                      <span className="text-muted-foreground">{key}</span>
+                      <span className="font-medium text-foreground text-right">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default ProductDetail;
