@@ -27,10 +27,12 @@ const Header = () => {
       <div className="bg-gradient-primary text-primary-foreground py-2">
         <div className="container flex flex-wrap justify-between items-center text-sm gap-2">
           <div className="flex items-center gap-6 flex-wrap">
-            <a href="tel:0978998811" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-1">
               <Phone className="w-4 h-4" />
-              <span className="font-medium">0978.99.88.11 - 082.589.3333</span>
-            </a>
+              <a href="tel:0978998811" className="font-medium hover:opacity-80 transition-opacity">0978.99.88.11</a>
+              <span>-</span>
+              <a href="tel:0825893333" className="font-medium hover:opacity-80 transition-opacity">082.589.3333</a>
+            </div>
             <a href="mailto:congnghehaiantn@gmail.com" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Mail className="w-4 h-4" />
               <span>congnghehaiantn@gmail.com</span>
