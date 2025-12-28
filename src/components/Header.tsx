@@ -38,7 +38,7 @@ const Header = () => {
           </div>
           <div className="hidden md:flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            <span>Tổ dân phố Cam Giá 2, P. Gia Sàng, TP. Thái Nguyên</span>
+            <span>SN 531A, đường CMT8 tổ 2, P. Gia Sàng, Thái Nguyên</span>
           </div>
         </div>
       </div>
