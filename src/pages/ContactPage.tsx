@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const contactInfo = [
   { icon: Phone, label: "Hotline", value: "0978 998 811", href: "tel:0978998811" },
-  { icon: Mail, label: "Email", value: "info@haian.vn", href: "mailto:info@haian.vn" },
+  { icon: Mail, label: "Email", value: "congnghehaiantn@gmail.com", href: "mailto:congnghehaiantn@gmail.com" },
   { icon: MapPin, label: "Địa chỉ", value: "Tổ dân phố Cam Giá 2, P. Gia Sàng, TP. Thái Nguyên, Tỉnh Thái Nguyên", href: "#" },
   { icon: Clock, label: "Giờ làm việc", value: "8:00 - 18:00 (T2 - CN)", href: "#" },
 ];
