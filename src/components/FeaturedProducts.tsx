@@ -1,4 +1,4 @@
-import { Star, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
@@ -92,14 +92,6 @@ const FeaturedProducts = () => {
 
               {/* Content */}
               <div className="p-5">
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold text-foreground">{product.rating}</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">({product.reviews} đánh giá)</span>
-                </div>
 
                 {/* Name */}
                 <Link to={`/product/${product.id}`}>
