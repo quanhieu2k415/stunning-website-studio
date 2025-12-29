@@ -26,6 +26,7 @@ const products = {
     reviews: 124,
     badge: "Bán chạy",
     category: "Camera giám sát",
+    categoryId: "camera",
     brand: "Hikvision",
     description: "Camera IP Hikvision DS-2CD1027G0-L là dòng camera ColorVu với khả năng ghi hình màu 24/7, ngay cả trong điều kiện ánh sáng yếu. Với độ phân giải 2MP Full HD 1080P, camera mang đến hình ảnh sắc nét và chi tiết. Thiết kế chống nước IP67 phù hợp lắp đặt ngoài trời.",
     features: [
@@ -61,6 +62,7 @@ const products = {
     reviews: 89,
     badge: "Mới",
     category: "Máy chấm công",
+    categoryId: "cham-cong",
     brand: "Ronald Jack",
     description: "Máy chấm công vân tay RONALD JACK X628-C là thiết bị chấm công hiện đại với khả năng nhận diện vân tay nhanh chóng và chính xác. Hỗ trợ kết nối TCP/IP và USB, dễ dàng tích hợp với phần mềm quản lý nhân sự. Màn hình LCD màu 2.8 inch hiển thị rõ ràng.",
     features: [
@@ -96,6 +98,7 @@ const products = {
     reviews: 56,
     badge: "Hot",
     category: "Kiểm soát ra vào",
+    categoryId: "kiem-soat",
     brand: "Samsung",
     description: "Khóa cửa thông minh SAMSUNG SHP-DP609 với thiết kế sang trọng, hiện đại. Hỗ trợ 4 phương thức mở khóa: vân tay, mã số, thẻ từ và chìa khóa cơ. Tích hợp công nghệ chống đột nhập và cảnh báo xâm nhập thông minh.",
     features: [
@@ -131,6 +134,7 @@ const products = {
     reviews: 78,
     badge: null,
     category: "Đầu ghi hình",
+    categoryId: "camera",
     brand: "Hikvision",
     description: "Đầu ghi hình 8 kênh Hikvision DS-7108NI hỗ trợ camera IP lên đến 4MP. Tích hợp công nghệ H.265+ tiết kiệm dung lượng ổ cứng. Hỗ trợ 1 ổ cứng SATA lên đến 6TB, phù hợp cho gia đình và văn phòng nhỏ.",
     features: [
@@ -166,6 +170,7 @@ const products = {
     reviews: 95,
     badge: "Bán chạy",
     category: "Camera giám sát",
+    categoryId: "camera",
     brand: "Ezviz",
     description: "Camera Wifi Ezviz C6N 2MP là camera trong nhà thông minh với khả năng xoay 360 độ, theo dõi chuyển động tự động. Hỗ trợ đàm thoại 2 chiều và thông báo qua điện thoại.",
     features: [
@@ -199,6 +204,7 @@ const products = {
     reviews: 42,
     badge: null,
     category: "Bộ đàm - Định vị",
+    categoryId: "bo-dam",
     brand: "Motorola",
     description: "Bộ đàm Motorola GP328 chuyên nghiệp với công suất cao, phạm vi liên lạc xa. Thiết kế chắc chắn, chống bụi chống nước IP54, phù hợp cho công trình, bảo vệ, sự kiện.",
     features: [
@@ -232,6 +238,7 @@ const products = {
     reviews: 67,
     badge: "Mới",
     category: "Máy chấm công",
+    categoryId: "cham-cong",
     brand: "ZKTeco",
     description: "Máy chấm công khuôn mặt ZKTeco MB20 với công nghệ nhận diện AI tiên tiến, chính xác cao. Hỗ trợ cả vân tay và khuôn mặt, màn hình cảm ứng 7 inch hiện đại.",
     features: [
@@ -265,6 +272,7 @@ const products = {
     reviews: 34,
     badge: null,
     category: "Báo động - PCCC",
+    categoryId: "bao-dong",
     brand: "Hochiki",
     description: "Hệ thống báo cháy Hochiki gồm tủ trung tâm và đầu báo khói chuyên nghiệp. Đạt tiêu chuẩn PCCC Việt Nam, phù hợp cho nhà xưởng, văn phòng, chung cư.",
     features: [
@@ -331,7 +339,7 @@ const ProductDetail = () => {
             <nav className="flex items-center gap-2 text-sm text-muted-foreground">
               <Link to="/" className="hover:text-primary transition-colors">Trang chủ</Link>
               <span>/</span>
-              <span className="hover:text-primary transition-colors cursor-pointer">{product.category}</span>
+              <Link to={`/san-pham?category=${product.categoryId}`} className="hover:text-primary transition-colors">{product.category}</Link>
               <span>/</span>
               <span className="text-foreground font-medium">{product.name}</span>
             </nav>

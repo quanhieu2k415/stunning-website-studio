@@ -2,8 +2,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 import cameraIpHikvision from "@/assets/products/camera-ip-hikvision.jpg";
 import mayChamCongVanTay from "@/assets/products/may-cham-cong-van-tay.jpg";
@@ -107,7 +107,15 @@ const categories = [
 ];
 
 const ProductsPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get("category");
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "all");
+
+  useEffect(() => {
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
 
   const filteredProducts = selectedCategory === "all" 
     ? allProducts 
