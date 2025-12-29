@@ -21,10 +21,30 @@ const ContactPage = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.");
-    setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        toast.success("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất.");
+        setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
+      } else {
+        toast.error("Có lỗi xảy ra. Vui lòng thử lại hoặc gọi trực tiếp cho chúng tôi.");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại hoặc gọi trực tiếp cho chúng tôi.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -160,9 +180,9 @@ const ContactPage = () => {
                       placeholder="Mô tả chi tiết yêu cầu của bạn..."
                     />
                   </div>
-                  <Button type="submit" size="lg" className="w-full">
+                  <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                     <Send className="w-5 h-5" />
-                    Gửi yêu cầu
+                    {isSubmitting ? "Đang gửi..." : "Gửi yêu cầu"}
                   </Button>
                 </form>
               </div>
