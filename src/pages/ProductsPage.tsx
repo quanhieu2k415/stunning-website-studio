@@ -5,15 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
+import cameraIpHikvision from "@/assets/products/camera-ip-hikvision.jpg";
+import mayChamCongVanTay from "@/assets/products/may-cham-cong-van-tay.jpg";
+import khoaCuaThongMinh from "@/assets/products/khoa-cua-thong-minh.jpg";
+import dauGhiHinh from "@/assets/products/dau-ghi-hinh.jpg";
+import cameraWifi from "@/assets/products/camera-wifi.jpg";
+import boDam from "@/assets/products/bo-dam.jpg";
+import mayChamCongKhuonMat from "@/assets/products/may-cham-cong-khuon-mat.jpg";
+import baoChay from "@/assets/products/bao-chay.jpg";
+
 const allProducts = [
   {
     id: 1,
     name: "Camera IP Hikvision DS-2CD1027G0-L",
     price: "1.650.000",
     originalPrice: "1.890.000",
-    image: "https://images.unsplash.com/photo-1580981454274-cb8be8ba3b86?w=400&h=400&fit=crop",
-    rating: 4.8,
-    reviews: 124,
+    image: cameraIpHikvision,
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "camera",
@@ -23,9 +30,7 @@ const allProducts = [
     name: "Máy Chấm Công Vân Tay RONALD JACK X628-C",
     price: "2.850.000",
     originalPrice: "3.200.000",
-    image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400&h=400&fit=crop",
-    rating: 4.9,
-    reviews: 89,
+    image: mayChamCongVanTay,
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "cham-cong",
@@ -35,9 +40,7 @@ const allProducts = [
     name: "Khóa Cửa Thông Minh SAMSUNG SHP-DP609",
     price: "12.500.000",
     originalPrice: "14.900.000",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
-    rating: 5.0,
-    reviews: 56,
+    image: khoaCuaThongMinh,
     badge: "Hot",
     badgeColor: "bg-orange-500",
     category: "kiem-soat",
@@ -47,9 +50,7 @@ const allProducts = [
     name: "Đầu Ghi Hình 8 Kênh Hikvision DS-7108NI",
     price: "3.200.000",
     originalPrice: "3.800.000",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=400&fit=crop",
-    rating: 4.7,
-    reviews: 78,
+    image: dauGhiHinh,
     badge: null,
     badgeColor: "",
     category: "camera",
@@ -59,9 +60,7 @@ const allProducts = [
     name: "Camera Wifi Ezviz C6N 2MP",
     price: "890.000",
     originalPrice: "1.100.000",
-    image: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=400&h=400&fit=crop",
-    rating: 4.6,
-    reviews: 203,
+    image: cameraWifi,
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "camera",
@@ -71,9 +70,7 @@ const allProducts = [
     name: "Bộ Đàm Motorola GP328",
     price: "4.500.000",
     originalPrice: "5.200.000",
-    image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=400&fit=crop",
-    rating: 4.8,
-    reviews: 45,
+    image: boDam,
     badge: null,
     badgeColor: "",
     category: "bo-dam",
@@ -83,9 +80,7 @@ const allProducts = [
     name: "Máy Chấm Công Khuôn Mặt ZKTeco MB20",
     price: "5.800.000",
     originalPrice: "6.500.000",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=400&fit=crop",
-    rating: 4.9,
-    reviews: 67,
+    image: mayChamCongKhuonMat,
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "cham-cong",
@@ -95,9 +90,7 @@ const allProducts = [
     name: "Hệ Thống Báo Cháy Hochiki",
     price: "8.900.000",
     originalPrice: "10.500.000",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=400&fit=crop",
-    rating: 4.7,
-    reviews: 32,
+    image: baoChay,
     badge: null,
     badgeColor: "",
     category: "bao-dong",
@@ -183,7 +176,6 @@ const ProductsPage = () => {
                   </Link>
 
                   <div className="p-5">
-
                     <Link to={`/product/${product.id}`}>
                       <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors h-12">
                         {product.name}

@@ -2,15 +2,18 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
+import cameraIpHikvision from "@/assets/products/camera-ip-hikvision.jpg";
+import mayChamCongVanTay from "@/assets/products/may-cham-cong-van-tay.jpg";
+import khoaCuaThongMinh from "@/assets/products/khoa-cua-thong-minh.jpg";
+import dauGhiHinh from "@/assets/products/dau-ghi-hinh.jpg";
+
 const products = [
   {
     id: 1,
     name: "Camera IP Hikvision DS-2CD1027G0-L",
     price: "1.650.000",
     originalPrice: "1.890.000",
-    image: "https://images.unsplash.com/photo-1580981454274-cb8be8ba3b86?w=400&h=400&fit=crop",
-    rating: 4.8,
-    reviews: 124,
+    image: cameraIpHikvision,
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
   },
@@ -19,9 +22,7 @@ const products = [
     name: "Máy Chấm Công Vân Tay RONALD JACK X628-C",
     price: "2.850.000",
     originalPrice: "3.200.000",
-    image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400&h=400&fit=crop",
-    rating: 4.9,
-    reviews: 89,
+    image: mayChamCongVanTay,
     badge: "Mới",
     badgeColor: "bg-primary",
   },
@@ -30,9 +31,7 @@ const products = [
     name: "Khóa Cửa Thông Minh SAMSUNG SHP-DP609",
     price: "12.500.000",
     originalPrice: "14.900.000",
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
-    rating: 5.0,
-    reviews: 56,
+    image: khoaCuaThongMinh,
     badge: "Hot",
     badgeColor: "bg-orange-500",
   },
@@ -41,9 +40,7 @@ const products = [
     name: "Đầu Ghi Hình 8 Kênh Hikvision DS-7108NI",
     price: "3.200.000",
     originalPrice: "3.800.000",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=400&fit=crop",
-    rating: 4.7,
-    reviews: 78,
+    image: dauGhiHinh,
     badge: null,
     badgeColor: "",
   },
@@ -92,7 +89,6 @@ const FeaturedProducts = () => {
 
               {/* Content */}
               <div className="p-5">
-
                 {/* Name */}
                 <Link to={`/product/${product.id}`}>
                   <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors h-12">
