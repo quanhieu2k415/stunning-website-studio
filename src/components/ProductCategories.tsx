@@ -75,7 +75,7 @@ const ProductCategories = () => {
               
               {/* Icon */}
               <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                <category.icon className="w-7 h-7 text-primary-foreground" />
+                <category.icon className="w-7 h-7 text-white" />
               </div>
 
               {/* Content */}
