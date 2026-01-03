@@ -1,44 +1,51 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Target, Eye, Award, Users, CheckCircle2 } from "lucide-react";
+import { Network, Shield, Monitor, Cpu, Users, Wrench, CheckCircle2, Zap, Award, Building2 } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
 
-const stats = [
-  { value: "10+", label: "Năm kinh nghiệm" },
-  { value: "5000+", label: "Khách hàng" },
-  { value: "1000+", label: "Dự án" },
-  { value: "98%", label: "Hài lòng" },
+const expertise = [
+  {
+    icon: Network,
+    title: "Hạ tầng mạng & An ninh",
+    description: "Thiết kế, thi công mạng nội bộ và hệ thống camera giám sát thông minh với thiết bị chính hãng từ Hikvision, Samsung, ZKTeco...",
+    features: ["Mạng LAN/WAN doanh nghiệp", "Camera giám sát AI", "Hệ thống chấm công", "Khóa cửa thông minh"]
+  },
+  {
+    icon: Cpu,
+    title: "Giải pháp phần cứng",
+    description: "Tư vấn và lắp đặt hệ thống máy tính chuyên dụng, từ PC văn phòng tối ưu đến các dàn PC Gaming cấu hình cao.",
+    features: ["PC Gaming cao cấp", "Workstation đồ họa", "PC văn phòng tối ưu", "Nâng cấp & Bảo trì"]
+  },
 ];
 
 const values = [
   {
-    icon: Target,
-    title: "Tận Tâm",
-    description: "Luôn đặt lợi ích khách hàng lên hàng đầu, tư vấn giải pháp phù hợp nhất",
+    icon: Shield,
+    title: "Thiết bị chính hãng",
+    description: "Cam kết 100% sản phẩm chính hãng, nguồn gốc rõ ràng",
   },
   {
-    icon: Award,
-    title: "Chất Lượng",
-    description: "Cam kết sản phẩm chính hãng, dịch vụ đạt tiêu chuẩn cao nhất",
-  },
-  {
-    icon: Eye,
-    title: "Chuyên Nghiệp",
-    description: "Đội ngũ kỹ thuật được đào tạo bài bản, giàu kinh nghiệm thực tế",
+    icon: Wrench,
+    title: "Triển khai đúng kỹ thuật",
+    description: "Đội ngũ kỹ sư trẻ, am hiểu kỹ thuật, thi công chuẩn xác",
   },
   {
     icon: Users,
-    title: "Đồng Hành",
-    description: "Hỗ trợ khách hàng 24/7, đồng hành trong suốt quá trình sử dụng",
+    title: "Tư vấn đúng nhu cầu",
+    description: "Lắng nghe và đề xuất giải pháp phù hợp nhất cho từng khách hàng",
+  },
+  {
+    icon: Zap,
+    title: "Hỗ trợ nhanh chóng",
+    description: "Phản hồi và xử lý sự cố kịp thời, đảm bảo hệ thống luôn ổn định",
   },
 ];
 
-const milestones = [
-  { year: "2014", title: "Thành lập công ty", description: "Bắt đầu hoạt động tại Thái Nguyên" },
-  { year: "2016", title: "Mở rộng dịch vụ", description: "Trở thành nhà phân phối chính thức Hikvision" },
-  { year: "2018", title: "1000 khách hàng", description: "Cột mốc 1000 khách hàng tin dùng" },
-  { year: "2020", title: "Đối tác Samsung", description: "Hợp tác phân phối khóa thông minh Samsung" },
-  { year: "2023", title: "5000+ khách hàng", description: "Phục vụ hơn 5000 khách hàng toàn quốc" },
+const clients = [
+  { icon: Building2, title: "Văn phòng", description: "Giải pháp mạng và bảo mật toàn diện" },
+  { icon: Monitor, title: "Showroom", description: "Hệ thống camera và quản lý chuyên nghiệp" },
+  { icon: Award, title: "Cửa hàng", description: "An ninh và kiểm soát ra vào thông minh" },
+  { icon: Cpu, title: "Doanh nghiệp", description: "Hạ tầng IT và giải pháp đồng bộ" },
 ];
 
 const AboutPage = () => {
@@ -48,59 +55,81 @@ const AboutPage = () => {
       
       <main className="flex-1">
         {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
+        <section className="relative py-24 overflow-hidden">
           <div className="absolute inset-0">
             <img src={heroBanner} alt="Hai An Technology" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-hero" />
           </div>
           <div className="container relative text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4">
-              Về Hai An Technology
+            <span className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-semibold mb-6">
+              Thành lập năm 2025
+            </span>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+              Nền Tảng Công Nghệ Cho <br className="hidden md:block" />
+              <span className="text-primary-light">Sự Bứt Phá</span>
             </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              Hơn 10 năm kinh nghiệm trong lĩnh vực camera và giải pháp an ninh
+            <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+              Đơn vị tiên phong tại Thái Nguyên cung cấp hệ sinh thái giải pháp công nghệ toàn diện
             </p>
           </div>
         </section>
 
-        {/* About */}
+        {/* Philosophy */}
+        <section className="py-16 bg-muted/30">
+          <div className="container">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-8">
+                <Network className="w-5 h-5 text-primary" />
+                <span className="text-primary font-semibold">Triết lý hoạt động</span>
+              </div>
+              <blockquote className="text-2xl md:text-3xl font-medium text-foreground leading-relaxed mb-6">
+                "Một hạ tầng mạng <span className="text-primary">đúng chuẩn – ổn định – lâu dài</span> chính là 
+                <span className="text-gradient font-bold"> "mạch máu"</span> để mọi hệ thống vận hành hiệu quả."
+              </blockquote>
+              <p className="text-muted-foreground text-lg">
+                Tại Hai An Technology, uy tín của chúng tôi được xây dựng trên sự ổn định trong hệ thống của bạn.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Expertise */}
         <section className="py-16">
           <div className="container">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
-                  Câu chuyện của chúng tôi
-                </span>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                  Uy Tín Tạo Nên <span className="text-gradient">Giá Trị</span>
-                </h2>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    <strong className="text-foreground">Hai An Technology</strong> được thành lập năm 2014, 
-                    là đơn vị chuyên cung cấp và thi công các giải pháp camera giám sát, thiết bị an ninh 
-                    và công nghệ thông minh tại Thái Nguyên và các tỉnh lân cận.
-                  </p>
-                  <p>
-                    Với phương châm <em>"Uy tín tạo nên giá trị - Chất lượng khẳng định thương hiệu"</em>, 
-                    chúng tôi cam kết mang đến cho khách hàng những sản phẩm chính hãng, dịch vụ chuyên nghiệp 
-                    và giải pháp tối ưu nhất.
-                  </p>
-                  <p>
-                    Là đối tác chính thức của các thương hiệu lớn như Hikvision, Samsung, ZKTeco, Ronald Jack... 
-                    chúng tôi tự hào đã phục vụ hơn 5000 khách hàng và hoàn thành hơn 1000 dự án các quy mô khác nhau.
-                  </p>
-                </div>
-              </div>
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
+                Lĩnh vực chuyên sâu
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Giải Pháp <span className="text-gradient">Toàn Diện</span>
+              </h2>
+              <p className="text-muted-foreground">
+                Chúng tôi mang đến hệ sinh thái công nghệ đầy đủ cho mọi nhu cầu của doanh nghiệp
+              </p>
+            </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-6">
-                {stats.map((stat) => (
-                  <div key={stat.label} className="bg-card rounded-2xl p-6 shadow-card border border-border text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">{stat.value}</div>
-                    <p className="text-muted-foreground">{stat.label}</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {expertise.map((item) => (
+                <div key={item.title} className="bg-card rounded-2xl p-8 shadow-card border border-border group hover:shadow-card-hover transition-all">
+                  <div className="flex items-start gap-6">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-primary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <item.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-foreground mb-3">{item.title}</h3>
+                      <p className="text-muted-foreground mb-4">{item.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {item.features.map((feature) => (
+                          <span key={feature} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -110,10 +139,10 @@ const AboutPage = () => {
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
-                Giá trị cốt lõi
+                Cam kết của chúng tôi
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Cam Kết Của <span className="text-gradient">Chúng Tôi</span>
+                <span className="text-gradient">"Tư Vấn Đúng Nhu Cầu – Triển Khai Đúng Kỹ Thuật"</span>
               </h2>
             </div>
 
@@ -121,9 +150,9 @@ const AboutPage = () => {
               {values.map((value) => (
                 <div key={value.title} className="bg-card rounded-2xl p-6 shadow-card border border-border text-center group hover:shadow-card-hover transition-all">
                   <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <value.icon className="w-7 h-7 text-primary-foreground" />
+                    <value.icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-foreground mb-2">{value.title}</h3>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{value.title}</h3>
                   <p className="text-muted-foreground text-sm">{value.description}</p>
                 </div>
               ))}
@@ -131,37 +160,61 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* Timeline */}
+        {/* Clients */}
         <section className="py-16">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
-                Hành trình phát triển
+                Đối tượng phục vụ
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Các Cột Mốc <span className="text-gradient">Quan Trọng</span>
+                Giải Pháp Cho <span className="text-gradient">Mọi Quy Mô</span>
               </h2>
+              <p className="text-muted-foreground">
+                Từ cửa hàng nhỏ đến doanh nghiệp lớn, chúng tôi đều có giải pháp phù hợp
+              </p>
             </div>
 
-            <div className="relative">
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2" />
-              
-              <div className="space-y-8">
-                {milestones.map((item, index) => (
-                  <div key={item.year} className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                    <div className="flex-1 md:pr-8 md:text-right" />
-                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-primary items-center justify-center z-10 shadow-glow">
-                      <CheckCircle2 className="w-6 h-6 text-primary-foreground" />
-                    </div>
-                    <div className="flex-1 md:pl-8">
-                      <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                        <span className="text-sm font-bold text-primary">{item.year}</span>
-                        <h4 className="text-lg font-bold text-foreground mt-1">{item.title}</h4>
-                        <p className="text-muted-foreground text-sm mt-1">{item.description}</p>
-                      </div>
-                    </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              {clients.map((client) => (
+                <div key={client.title} className="bg-card rounded-2xl p-6 shadow-card border border-border text-center group hover:shadow-card-hover transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <client.icon className="w-6 h-6 text-primary" />
                   </div>
-                ))}
+                  <h3 className="text-lg font-bold text-foreground mb-1">{client.title}</h3>
+                  <p className="text-muted-foreground text-sm">{client.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Team */}
+        <section className="py-16 bg-gradient-primary">
+          <div className="container text-center">
+            <div className="max-w-3xl mx-auto">
+              <Users className="w-12 h-12 text-white mx-auto mb-6" />
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                Đội Ngũ Kỹ Sư Trẻ, Năng Động
+              </h2>
+              <p className="text-white/90 text-lg leading-relaxed mb-8">
+                Với đội ngũ kỹ sư trẻ, am hiểu kỹ thuật và không ngừng cập nhật xu hướng công nghệ mới nhất, 
+                chúng tôi tự tin mang đến những giải pháp tối ưu, hiện đại cho văn phòng, showroom, 
+                cửa hàng và doanh nghiệp của bạn.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Đào tạo chuyên sâu
+                </span>
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Cập nhật công nghệ
+                </span>
+                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Kinh nghiệm thực tế
+                </span>
               </div>
             </div>
           </div>
