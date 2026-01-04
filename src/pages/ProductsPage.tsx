@@ -24,6 +24,7 @@ const allProducts = [
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "camera",
+    brand: "Hikvision",
   },
   {
     id: 2,
@@ -34,6 +35,7 @@ const allProducts = [
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "cham-cong",
+    brand: "Ronald Jack",
   },
   {
     id: 3,
@@ -44,6 +46,7 @@ const allProducts = [
     badge: "Hot",
     badgeColor: "bg-orange-500",
     category: "kiem-soat",
+    brand: "Samsung",
   },
   {
     id: 4,
@@ -54,6 +57,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "camera",
+    brand: "Hikvision",
   },
   {
     id: 5,
@@ -64,6 +68,7 @@ const allProducts = [
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "camera",
+    brand: "Ezviz",
   },
   {
     id: 6,
@@ -74,6 +79,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "bo-dam",
+    brand: "Motorola",
   },
   {
     id: 7,
@@ -84,6 +90,7 @@ const allProducts = [
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "cham-cong",
+    brand: "ZKTeco",
   },
   {
     id: 8,
@@ -94,6 +101,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "bao-dong",
+    brand: "Hochiki",
   },
   // Linh kiện PC - CPU
   {
@@ -105,6 +113,7 @@ const allProducts = [
     badge: "Hot",
     badgeColor: "bg-orange-500",
     category: "cpu",
+    brand: "Intel",
   },
   {
     id: 10,
@@ -115,6 +124,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "cpu",
+    brand: "AMD",
   },
   {
     id: 11,
@@ -125,6 +135,7 @@ const allProducts = [
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "cpu",
+    brand: "Intel",
   },
   // VGA
   {
@@ -136,6 +147,7 @@ const allProducts = [
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "vga",
+    brand: "NVIDIA",
   },
   {
     id: 13,
@@ -146,6 +158,7 @@ const allProducts = [
     badge: "Hot",
     badgeColor: "bg-orange-500",
     category: "vga",
+    brand: "NVIDIA",
   },
   {
     id: 14,
@@ -156,6 +169,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "vga",
+    brand: "AMD",
   },
   // RAM
   {
@@ -167,6 +181,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "ram",
+    brand: "Kingston",
   },
   {
     id: 16,
@@ -177,6 +192,7 @@ const allProducts = [
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "ram",
+    brand: "Corsair",
   },
   // SSD
   {
@@ -188,6 +204,7 @@ const allProducts = [
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "ssd",
+    brand: "Samsung",
   },
   {
     id: 18,
@@ -198,6 +215,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "ssd",
+    brand: "WD",
   },
   // Mainboard
   {
@@ -209,6 +227,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "mainboard",
+    brand: "ASUS",
   },
   {
     id: 20,
@@ -219,6 +238,7 @@ const allProducts = [
     badge: "Mới",
     badgeColor: "bg-primary",
     category: "mainboard",
+    brand: "GIGABYTE",
   },
   // PSU
   {
@@ -230,6 +250,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "psu",
+    brand: "Corsair",
   },
   {
     id: 22,
@@ -240,6 +261,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "psu",
+    brand: "ASUS",
   },
   // Case
   {
@@ -251,6 +273,7 @@ const allProducts = [
     badge: "Bán chạy",
     badgeColor: "bg-red-500",
     category: "case",
+    brand: "NZXT",
   },
   {
     id: 24,
@@ -261,6 +284,7 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "case",
+    brand: "Corsair",
   },
   // Tản nhiệt
   {
@@ -272,6 +296,7 @@ const allProducts = [
     badge: "Hot",
     badgeColor: "bg-orange-500",
     category: "cooling",
+    brand: "NZXT",
   },
   {
     id: 26,
@@ -282,8 +307,12 @@ const allProducts = [
     badge: null,
     badgeColor: "",
     category: "cooling",
+    brand: "DeepCool",
   },
 ];
+
+// Extract unique brands from products
+const allBrands = [...new Set(allProducts.map(p => p.brand))].sort();
 
 const categories = [
   { id: "all", name: "Tất cả sản phẩm" },
@@ -307,6 +336,7 @@ const ProductsPage = () => {
   const categoryFromUrl = searchParams.get("category");
   const searchQuery = searchParams.get("q") || "";
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "all");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
 
   useEffect(() => {
     if (categoryFromUrl) {
@@ -314,17 +344,41 @@ const ProductsPage = () => {
     }
   }, [categoryFromUrl]);
 
+  // Get brands available for selected category
+  const availableBrands = selectedCategory === "all"
+    ? allBrands
+    : [...new Set(allProducts.filter(p => p.category === selectedCategory).map(p => p.brand))].sort();
+
+  // Toggle brand selection
+  const toggleBrand = (brand: string) => {
+    setSelectedBrands(prev => 
+      prev.includes(brand) 
+        ? prev.filter(b => b !== brand)
+        : [...prev, brand]
+    );
+  };
+
+  // Clear brand filters when category changes
+  useEffect(() => {
+    setSelectedBrands([]);
+  }, [selectedCategory]);
+
   // Filter by category first
   const categoryFiltered = selectedCategory === "all" 
     ? allProducts 
     : allProducts.filter(p => p.category === selectedCategory);
   
+  // Then filter by brand
+  const brandFiltered = selectedBrands.length > 0
+    ? categoryFiltered.filter(p => selectedBrands.includes(p.brand))
+    : categoryFiltered;
+
   // Then filter by search query
   const filteredProducts = searchQuery
-    ? categoryFiltered.filter(p => 
+    ? brandFiltered.filter(p => 
         p.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : categoryFiltered;
+    : brandFiltered;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -347,7 +401,7 @@ const ProductsPage = () => {
         <section className="py-12">
           <div className="container">
             {/* Category filters */}
-            <div className="flex flex-wrap gap-3 mb-10">
+            <div className="flex flex-wrap gap-3 mb-6">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
@@ -363,9 +417,44 @@ const ProductsPage = () => {
               ))}
             </div>
 
+            {/* Brand filters */}
+            {availableBrands.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-foreground mb-3">Thương hiệu:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {availableBrands.map((brand) => (
+                    <button
+                      key={brand}
+                      onClick={() => toggleBrand(brand)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                        selectedBrands.includes(brand)
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background text-foreground border-border hover:border-primary/50"
+                      }`}
+                    >
+                      {brand}
+                    </button>
+                  ))}
+                  {selectedBrands.length > 0 && (
+                    <button
+                      onClick={() => setSelectedBrands([])}
+                      className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Xóa bộ lọc
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Products count */}
             <p className="text-muted-foreground mb-6">
               Hiển thị <span className="font-semibold text-foreground">{filteredProducts.length}</span> sản phẩm
+              {selectedBrands.length > 0 && (
+                <span className="ml-2">
+                  (Lọc theo: {selectedBrands.join(", ")})
+                </span>
+              )}
             </p>
 
             {/* Products grid */}
