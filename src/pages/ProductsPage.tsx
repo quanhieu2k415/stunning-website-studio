@@ -95,6 +95,67 @@ const allProducts = [
     badgeColor: "",
     category: "bao-dong",
   },
+  // Linh kiện PC
+  {
+    id: 9,
+    name: "CPU Intel Core i5-13400F",
+    price: "5.290.000",
+    originalPrice: "5.990.000",
+    image: "/placeholder.svg",
+    badge: "Hot",
+    badgeColor: "bg-orange-500",
+    category: "linh-kien",
+  },
+  {
+    id: 10,
+    name: "VGA NVIDIA RTX 4060 8GB",
+    price: "7.990.000",
+    originalPrice: "8.990.000",
+    image: "/placeholder.svg",
+    badge: "Bán chạy",
+    badgeColor: "bg-red-500",
+    category: "linh-kien",
+  },
+  {
+    id: 11,
+    name: "RAM Kingston Fury 32GB DDR5 6000MHz",
+    price: "2.990.000",
+    originalPrice: "3.490.000",
+    image: "/placeholder.svg",
+    badge: null,
+    badgeColor: "",
+    category: "linh-kien",
+  },
+  {
+    id: 12,
+    name: "SSD Samsung 990 Pro 1TB NVMe",
+    price: "3.290.000",
+    originalPrice: "3.890.000",
+    image: "/placeholder.svg",
+    badge: "Mới",
+    badgeColor: "bg-primary",
+    category: "linh-kien",
+  },
+  {
+    id: 13,
+    name: "Mainboard ASUS TUF Gaming B760M",
+    price: "3.990.000",
+    originalPrice: "4.490.000",
+    image: "/placeholder.svg",
+    badge: null,
+    badgeColor: "",
+    category: "linh-kien",
+  },
+  {
+    id: 14,
+    name: "PSU Corsair RM850x 850W 80+ Gold",
+    price: "2.990.000",
+    originalPrice: "3.390.000",
+    image: "/placeholder.svg",
+    badge: null,
+    badgeColor: "",
+    category: "linh-kien",
+  },
 ];
 
 const categories = [
@@ -104,6 +165,7 @@ const categories = [
   { id: "kiem-soat", name: "Kiểm soát ra vào" },
   { id: "bo-dam", name: "Bộ đàm - Định vị" },
   { id: "bao-dong", name: "Báo động - PCCC" },
+  { id: "linh-kien", name: "Linh kiện PC" },
 ];
 
 const ProductsPage = () => {

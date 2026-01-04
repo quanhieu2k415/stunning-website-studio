@@ -1,4 +1,4 @@
-import { Camera, Clock, Radio, Shield, Wifi, MonitorSpeaker } from "lucide-react";
+import { Camera, Clock, Radio, Shield, Wifi, MonitorSpeaker, Cpu } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const categories = [
@@ -35,12 +35,12 @@ const categories = [
     to: "/san-pham?category=kiem-soat",
   },
   {
-    icon: Wifi,
-    title: "Thiết Bị Mạng",
-    description: "Switch, router, access point chuyên dụng",
-    count: "0 sản phẩm",
-    color: "from-cyan-500 to-cyan-600",
-    to: "/san-pham",
+    icon: Cpu,
+    title: "Linh Kiện PC Gaming",
+    description: "CPU, VGA, RAM, SSD, nguồn, case và phụ kiện",
+    count: "6 sản phẩm",
+    color: "from-rose-500 to-rose-600",
+    to: "/san-pham?category=linh-kien",
   },
   {
     icon: MonitorSpeaker,

@@ -50,6 +50,7 @@ const Header = () => {
   const navLinks = [
     { name: "Trang chủ", href: "/" },
     { name: "Sản phẩm", href: "/san-pham" },
+    { name: "Build PC", href: "/build-pc" },
     { name: "Dịch vụ", href: "/dich-vu" },
     { name: "Giới thiệu", href: "/gioi-thieu" },
     { name: "Liên hệ", href: "/lien-he" },
