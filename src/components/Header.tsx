@@ -1,13 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Phone, Mail, MapPin, Search } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "@/assets/logo.jpg";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Initialize search from URL when on products page
+  const [searchValue, setSearchValue] = useState(() => {
+    if (location.pathname === "/san-pham") {
+      return searchParams.get("q") || "";
+    }
+    return "";
+  });
+  
+  const debouncedSearch = useDebounce(searchValue, 400);
+  
+  // Navigate to products page with search query
+  useEffect(() => {
+    if (debouncedSearch) {
+      const params = new URLSearchParams(searchParams);
+      params.set("q", debouncedSearch);
+      navigate(`/san-pham?${params.toString()}`, { replace: location.pathname === "/san-pham" });
+    } else if (location.pathname === "/san-pham" && searchParams.has("q")) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("q");
+      const queryString = params.toString();
+      navigate(`/san-pham${queryString ? `?${queryString}` : ""}`, { replace: true });
+    }
+  }, [debouncedSearch]);
+  
+  // Clear search when leaving products page
+  useEffect(() => {
+    if (location.pathname !== "/san-pham") {
+      setSearchValue("");
+    } else {
+      // Sync search value with URL when navigating to products page
+      const q = searchParams.get("q");
+      if (q !== null && q !== searchValue) {
+        setSearchValue(q);
+      }
+    }
+  }, [location.pathname]);
   const navLinks = [
     { name: "Trang chủ", href: "/" },
     { name: "Sản phẩm", href: "/san-pham" },
@@ -79,7 +118,9 @@ const Header = () => {
             <div className="hidden md:flex items-center relative">
               <input
                 type="text"
-                placeholder="Tìm kiếm..."
+                placeholder="Tìm kiếm sản phẩm..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 className="w-48 lg:w-64 h-10 pl-10 pr-4 rounded-full bg-muted border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
               />
               <Search className="absolute left-3 w-4 h-4 text-muted-foreground" />
