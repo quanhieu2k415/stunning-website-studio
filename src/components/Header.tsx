@@ -143,7 +143,19 @@ const Header = () => {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="lg:hidden bg-card border-t border-border animate-fade-in">
-            <nav className="container py-4 flex flex-col gap-1">
+            <nav className="container py-4 flex flex-col gap-2">
+              {/* Mobile search */}
+              <div className="relative mb-2">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full h-11 pl-10 pr-4 rounded-lg bg-muted border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              </div>
+              
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
