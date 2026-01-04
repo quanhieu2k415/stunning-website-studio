@@ -109,6 +109,7 @@ const categories = [
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
+  const searchQuery = searchParams.get("q") || "";
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "all");
 
   useEffect(() => {
@@ -117,9 +118,17 @@ const ProductsPage = () => {
     }
   }, [categoryFromUrl]);
 
-  const filteredProducts = selectedCategory === "all" 
+  // Filter by category first
+  const categoryFiltered = selectedCategory === "all" 
     ? allProducts 
     : allProducts.filter(p => p.category === selectedCategory);
+  
+  // Then filter by search query
+  const filteredProducts = searchQuery
+    ? categoryFiltered.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : categoryFiltered;
 
   return (
     <div className="min-h-screen flex flex-col">
