@@ -127,7 +127,7 @@ const Footer = () => {
             {/* Small Google Maps */}
             <div className="rounded-xl overflow-hidden border border-primary-foreground/20">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1061!2d105.8529285!3d21.5625716!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135274299d84835%3A0x7d6187d98fd0dde6!2zQ8O0bmcgdHkgVE5ISCBDw7RuZyBOZ2jhu4cgSOG6o2kgQW4gVGjDoWkgTmd1ecOqbg!5e0!3m2!1svi!2s!4v1705800000000!5m2!1svi!2s"
+                src="https://www.google.com/maps?q=21.5625716,105.8555034&hl=vi&z=16&output=embed"
                 width="100%"
                 height="120"
                 style={{ border: 0 }}
@@ -138,6 +138,15 @@ const Footer = () => {
                 className="grayscale hover:grayscale-0 transition-all duration-500"
               />
             </div>
+
+            <a
+              href="https://www.google.com/maps/place/C%C3%B4ng+ty+TNHH+C%C3%B4ng+Ngh%E1%BB%87+H%E1%BA%A3i+An+Th%C3%A1i+Nguy%C3%AAn/@21.5625716,105.8529285,1061m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3135274299d84835:0x7d6187d98fd0dde6!8m2!3d21.5625716!4d105.8555034!16s%2Fg%2F11y02bcdkh"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-primary-foreground/10 px-3 py-2 text-xs text-primary-foreground/80 hover:bg-primary-foreground/15 transition-colors"
+            >
+              Mở bản đồ trên Google Maps
+            </a>
           </div>
         </div>
       </div>
