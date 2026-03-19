@@ -31,6 +31,7 @@ export function useCreateBrand() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] });
+      queryClient.invalidateQueries({ queryKey: ["public-brands"] });
     },
   });
 }
@@ -50,6 +51,7 @@ export function useUpdateBrand() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] });
+      queryClient.invalidateQueries({ queryKey: ["public-brands"] });
     },
   });
 }
@@ -63,6 +65,7 @@ export function useDeleteBrand() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["brands"] });
+      queryClient.invalidateQueries({ queryKey: ["public-brands"] });
     },
   });
 }

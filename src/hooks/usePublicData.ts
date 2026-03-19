@@ -71,8 +71,8 @@ export function usePublicProducts() {
       if (error || !data?.length) return hardcodedProducts;
       return data.map(mapProduct);
     },
-    staleTime: 5 * 60 * 1000,
-    initialData: hardcodedProducts,
+    staleTime: 60 * 1000,
+    placeholderData: hardcodedProducts,
   });
 }
 
@@ -96,8 +96,8 @@ export function usePublicFeaturedProducts() {
       if (error || !data?.length) return hardcodedFeatured;
       return data.map(mapProduct);
     },
-    staleTime: 5 * 60 * 1000,
-    initialData: hardcodedFeatured,
+    staleTime: 60 * 1000,
+    placeholderData: hardcodedFeatured,
   });
 }
 
@@ -120,8 +120,8 @@ export function usePublicCategories() {
         ...data.map((c: any) => ({ id: c.slug, name: c.name, icon: c.icon || "" })),
       ];
     },
-    staleTime: 30 * 60 * 1000,
-    initialData: hardcodedCategories,
+    staleTime: 2 * 60 * 1000,
+    placeholderData: hardcodedCategories,
   });
 }
 
@@ -141,8 +141,8 @@ export function usePublicBrands() {
       if (error || !data?.length) return hardcodedBrands;
       return data.map((b: any) => b.name);
     },
-    staleTime: 30 * 60 * 1000,
-    initialData: hardcodedBrands,
+    staleTime: 2 * 60 * 1000,
+    placeholderData: hardcodedBrands,
   });
 }
 
@@ -187,6 +187,6 @@ export function usePublicProductDetail(id: string) {
       return mapProductDetail(data);
     },
     enabled: !!id,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
   });
 }
