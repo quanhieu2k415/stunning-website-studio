@@ -33,6 +33,7 @@ const Header = () => {
       const queryString = params.toString();
       navigate(`/san-pham${queryString ? `?${queryString}` : ""}`, { replace: true });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
   
   // Clear search when leaving products page

@@ -1,5 +1,4 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Layout from "@/components/Layout";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -40,7 +39,7 @@ const ContactPage = () => {
       } else {
         toast.error("Có lỗi xảy ra. Vui lòng thử lại hoặc gọi trực tiếp cho chúng tôi.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi xảy ra. Vui lòng thử lại hoặc gọi trực tiếp cho chúng tôi.");
     } finally {
       setIsSubmitting(false);
@@ -48,10 +47,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      
-      <main className="flex-1">
+    <Layout>
         {/* Hero */}
         <section className="bg-gradient-primary py-16">
           <div className="container text-center">
@@ -201,10 +197,7 @@ const ContactPage = () => {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

@@ -1,5 +1,4 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Layout from "@/components/Layout";
 import { Network, Shield, Monitor, Cpu, Users, Wrench, CheckCircle2, Zap, Award, Building2 } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
 
@@ -50,10 +49,7 @@ const clients = [
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      
-      <main className="flex-1">
+    <Layout>
         {/* Hero */}
         <section className="relative py-24 overflow-hidden">
           <div className="absolute inset-0">
@@ -219,10 +215,7 @@ const AboutPage = () => {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 

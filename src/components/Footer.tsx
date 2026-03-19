@@ -1,4 +1,5 @@
 import { Facebook, Youtube, MessageCircle, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.jpg";
 
 const Footer = () => {
@@ -6,23 +7,23 @@ const Footer = () => {
 
   const links = {
     products: [
-      "Camera giám sát",
-      "Máy chấm công",
-      "Bộ đàm - Định vị",
-      "Kiểm soát ra vào",
-      "Thiết bị mạng",
+      { name: "Camera giám sát", href: "/san-pham?category=camera" },
+      { name: "Máy chấm công", href: "/san-pham?category=cham-cong" },
+      { name: "Bộ đàm - Định vị", href: "/san-pham?category=bo-dam" },
+      { name: "Kiểm soát ra vào", href: "/san-pham?category=kiem-soat" },
+      { name: "Linh kiện PC", href: "/san-pham?category=cpu" },
     ],
     services: [
-      "Thi công lắp đặt",
-      "Bảo trì bảo dưỡng",
-      "Tư vấn giải pháp",
-      "Hỗ trợ kỹ thuật",
+      { name: "Thi công lắp đặt", href: "/dich-vu" },
+      { name: "Bảo trì bảo dưỡng", href: "/dich-vu" },
+      { name: "Tư vấn giải pháp", href: "/lien-he" },
+      { name: "Build PC Gaming", href: "/build-pc" },
     ],
     company: [
-      "Giới thiệu",
-      "Tin tức",
-      "Tuyển dụng",
-      "Chính sách bảo hành",
+      { name: "Giới thiệu", href: "/gioi-thieu" },
+      { name: "Liên hệ", href: "/lien-he" },
+      { name: "Sản phẩm", href: "/san-pham" },
+      { name: "Dịch vụ", href: "/dich-vu" },
     ],
   };
 
@@ -68,10 +69,10 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-5">Sản phẩm</h4>
             <ul className="space-y-3">
               {links.products.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-primary-foreground/70 hover:text-primary transition-colors">
-                    {link}
-                  </a>
+                <li key={link.name}>
+                  <Link to={link.href} className="text-primary-foreground/70 hover:text-primary transition-colors">
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -82,10 +83,10 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-5">Dịch vụ</h4>
             <ul className="space-y-3">
               {links.services.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-primary-foreground/70 hover:text-primary transition-colors">
-                    {link}
-                  </a>
+                <li key={link.name}>
+                  <Link to={link.href} className="text-primary-foreground/70 hover:text-primary transition-colors">
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>

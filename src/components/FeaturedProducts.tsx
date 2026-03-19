@@ -1,52 +1,11 @@
-import { ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
-
-import cameraIpHikvision from "@/assets/products/camera-ip-hikvision.jpg";
-import mayChamCongVanTay from "@/assets/products/may-cham-cong-van-tay.jpg";
-import khoaCuaThongMinh from "@/assets/products/khoa-cua-thong-minh.jpg";
-import dauGhiHinh from "@/assets/products/dau-ghi-hinh.jpg";
-
-const products = [
-  {
-    id: 1,
-    name: "Camera IP Hikvision DS-2CD1027G0-L",
-    price: "1.650.000",
-    originalPrice: "1.890.000",
-    image: cameraIpHikvision,
-    badge: "Bán chạy",
-    badgeColor: "bg-red-500",
-  },
-  {
-    id: 2,
-    name: "Máy Chấm Công Vân Tay RONALD JACK X628-C",
-    price: "2.850.000",
-    originalPrice: "3.200.000",
-    image: mayChamCongVanTay,
-    badge: "Mới",
-    badgeColor: "bg-primary",
-  },
-  {
-    id: 3,
-    name: "Khóa Cửa Thông Minh SAMSUNG SHP-DP609",
-    price: "12.500.000",
-    originalPrice: "14.900.000",
-    image: khoaCuaThongMinh,
-    badge: "Hot",
-    badgeColor: "bg-orange-500",
-  },
-  {
-    id: 4,
-    name: "Đầu Ghi Hình 8 Kênh Hikvision DS-7108NI",
-    price: "3.200.000",
-    originalPrice: "3.800.000",
-    image: dauGhiHinh,
-    badge: null,
-    badgeColor: "",
-  },
-];
+import { usePublicFeaturedProducts } from "@/hooks/usePublicData";
+import ProductCard from "./ProductCard";
 
 const FeaturedProducts = () => {
+  const { data: featuredProducts = [] } = usePublicFeaturedProducts();
+
   return (
     <section className="py-20 bg-muted/50">
       <div className="container">
@@ -60,55 +19,15 @@ const FeaturedProducts = () => {
               Được Khách Hàng <span className="text-gradient">Tin Dùng</span>
             </h2>
           </div>
-          <Button variant="outline">
-            Xem tất cả sản phẩm
+          <Button variant="outline" asChild>
+            <Link to="/san-pham">Xem tất cả sản phẩm</Link>
           </Button>
         </div>
 
         {/* Products grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 border border-border"
-            >
-              {/* Image */}
-              <Link to={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-muted">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                {product.badge && (
-                  <span className={`absolute top-3 left-3 px-3 py-1 ${product.badgeColor} text-primary-foreground text-xs font-semibold rounded-full`}>
-                    {product.badge}
-                  </span>
-                )}
-                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors duration-300" />
-              </Link>
-
-              {/* Content */}
-              <div className="p-5">
-                {/* Name */}
-                <Link to={`/product/${product.id}`}>
-                  <h3 className="font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors h-12">
-                    {product.name}
-                  </h3>
-                </Link>
-
-                {/* Price */}
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-xl font-bold text-primary">{product.price}₫</span>
-                  <span className="text-sm text-muted-foreground line-through">{product.originalPrice}₫</span>
-                </div>
-
-                {/* Button */}
-                <Button className="w-full" size="sm">
-                  <ShoppingCart className="w-4 h-4" />
-                  Thêm vào giỏ
-                </Button>
-              </div>
-            </div>
+          {featuredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

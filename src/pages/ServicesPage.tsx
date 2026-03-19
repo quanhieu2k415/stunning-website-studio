@@ -1,6 +1,5 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { Wrench, Headphones, Truck, CheckCircle2, Settings, Shield, Zap, Users } from "lucide-react";
+import Layout from "@/components/Layout";
+import { Wrench, Headphones, Truck, CheckCircle2, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -31,7 +30,7 @@ const services = [
   },
 ];
 
-const process = [
+const processSteps = [
   { step: 1, title: "Tiếp nhận yêu cầu", description: "Nhận thông tin và tư vấn sơ bộ qua điện thoại hoặc trực tiếp" },
   { step: 2, title: "Khảo sát thực tế", description: "Đội ngũ kỹ thuật đến khảo sát và đánh giá hiện trạng công trình" },
   { step: 3, title: "Báo giá chi tiết", description: "Lập phương án và báo giá phù hợp với nhu cầu khách hàng" },
@@ -41,10 +40,7 @@ const process = [
 
 const ServicesPage = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      
-      <main className="flex-1">
+    <Layout>
         {/* Hero */}
         <section className="bg-gradient-primary py-16">
           <div className="container text-center">
@@ -107,7 +103,7 @@ const ServicesPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-              {process.map((item, index) => (
+              {processSteps.map((item, index) => (
                 <div key={item.step} className="relative text-center">
                   <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4 shadow-glow">
                     <span className="text-2xl font-bold text-primary-foreground">{item.step}</span>
@@ -115,7 +111,7 @@ const ServicesPage = () => {
                   <h4 className="font-semibold text-foreground mb-2">{item.title}</h4>
                   <p className="text-sm text-muted-foreground">{item.description}</p>
                   
-                  {index < process.length - 1 && (
+                  {index < processSteps.length - 1 && (
                     <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-border" />
                   )}
                 </div>
@@ -145,10 +141,7 @@ const ServicesPage = () => {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 };
 
