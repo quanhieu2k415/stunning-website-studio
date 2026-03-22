@@ -26,7 +26,7 @@ const PrebuiltConfigsPage = () => {
       await updateConfig.mutateAsync({ id: editingId, ...form });
       toast.success("Đã cập nhật cấu hình");
       setEditingId(null);
-    } catch { toast.error("Có lỗi xảy ra"); }
+    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
   };
 
   return (

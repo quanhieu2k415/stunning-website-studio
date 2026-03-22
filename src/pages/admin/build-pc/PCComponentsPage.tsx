@@ -25,7 +25,7 @@ const PCComponentsPage = () => {
       await updateCategory.mutateAsync({ id: editingId, components });
       toast.success("Đã cập nhật linh kiện");
       setEditingId(null);
-    } catch { toast.error("Có lỗi xảy ra"); }
+    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
   };
 
   return (

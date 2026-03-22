@@ -29,7 +29,7 @@ const BrandListPage = () => {
         toast.success("Đã tạo thương hiệu");
       }
       setEditBrand(null);
-    } catch { toast.error("Có lỗi xảy ra"); }
+    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
   };
 
   const handleDelete = async () => {
@@ -37,7 +37,7 @@ const BrandListPage = () => {
     try {
       await deleteBrand.mutateAsync(deleteId);
       toast.success("Đã xóa thương hiệu");
-    } catch { toast.error("Không thể xóa"); }
+    } catch (err: any) { toast.error(err?.message || "Không thể xóa"); }
     setDeleteId(null);
   };
 

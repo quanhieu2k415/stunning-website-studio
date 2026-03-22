@@ -51,6 +51,7 @@ export function useCreateCategory() {
       description?: string;
       display_group?: string;
       sort_order?: number;
+      is_active?: boolean;
     }) => {
       const { data, error } = await supabase
         .from("categories")

@@ -15,7 +15,7 @@ const ServiceListPage = () => {
 
   const handleDelete = async () => {
     if (!deleteId) return;
-    try { await deleteService.mutateAsync(deleteId); toast.success("Đã xóa"); } catch { toast.error("Lỗi"); }
+    try { await deleteService.mutateAsync(deleteId); toast.success("Đã xóa"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
     setDeleteId(null);
   };
 

@@ -68,8 +68,8 @@ export function usePublicProducts() {
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
 
-      if (error || !data?.length) return hardcodedProducts;
-      return data.map(mapProduct);
+      if (error) return hardcodedProducts;
+      return (data || []).map(mapProduct);
     },
     staleTime: 60 * 1000,
     placeholderData: hardcodedProducts,
@@ -93,8 +93,8 @@ export function usePublicFeaturedProducts() {
         .order("sort_order", { ascending: true })
         .limit(4);
 
-      if (error || !data?.length) return hardcodedFeatured;
-      return data.map(mapProduct);
+      if (error) return hardcodedFeatured;
+      return (data || []).map(mapProduct);
     },
     staleTime: 60 * 1000,
     placeholderData: hardcodedFeatured,
@@ -114,10 +114,10 @@ export function usePublicCategories() {
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
 
-      if (error || !data?.length) return hardcodedCategories;
+      if (error) return hardcodedCategories;
       return [
         { id: "all", name: "Tất cả", icon: "" },
-        ...data.map((c: any) => ({ id: c.slug, name: c.name, icon: c.icon || "" })),
+        ...(data || []).map((c: any) => ({ id: c.slug, name: c.name, icon: c.icon || "" })),
       ];
     },
     staleTime: 2 * 60 * 1000,
@@ -138,8 +138,8 @@ export function usePublicBrands() {
         .eq("is_active", true)
         .order("name", { ascending: true });
 
-      if (error || !data?.length) return hardcodedBrands;
-      return data.map((b: any) => b.name);
+      if (error) return hardcodedBrands;
+      return (data || []).map((b: any) => b.name);
     },
     staleTime: 2 * 60 * 1000,
     placeholderData: hardcodedBrands,

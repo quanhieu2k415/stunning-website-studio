@@ -41,7 +41,7 @@ const AboutSettingsPage = () => {
   useEffect(() => { if (existing) setForm({ ...defaultAbout, ...existing }); }, [existing]);
 
   const handleSave = async () => {
-    try { await update.mutateAsync({ key: "about_page", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật trang Giới thiệu"); } catch { toast.error("Lỗi"); }
+    try { await update.mutateAsync({ key: "about_page", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật trang Giới thiệu"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
   };
 
   if (isLoading) return <AdminLayout title="Giới thiệu"><div className="flex items-center justify-center min-h-[300px]"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div></AdminLayout>;

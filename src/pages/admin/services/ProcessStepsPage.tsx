@@ -19,7 +19,7 @@ const ProcessStepsPage = () => {
   }, [existing]);
 
   const handleSave = async () => {
-    try { await updateSteps.mutateAsync(steps); toast.success("Đã cập nhật quy trình"); } catch { toast.error("Lỗi"); }
+    try { await updateSteps.mutateAsync(steps); toast.success("Đã cập nhật quy trình"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
   };
 
   const addStep = () => setSteps([...steps, { step_number: steps.length + 1, title: "", description: "" }]);
