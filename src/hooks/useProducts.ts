@@ -111,6 +111,7 @@ export function useCreateProduct() {
     mutationFn: async (product: {
       name: string;
       slug: string;
+      sku?: string;
       price: string;
       original_price: string;
       category_id?: string;
@@ -200,6 +201,7 @@ export function useUpdateProduct() {
       id: string;
       name?: string;
       slug?: string;
+      sku?: string | null;
       price?: string;
       original_price?: string;
       category_id?: string | null;

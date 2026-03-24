@@ -50,6 +50,7 @@ function mapProductDetail(p: any): ProductDetail {
     ),
     warranty: p.warranty || "12 tháng",
     inStock: p.in_stock !== false,
+    sku: p.sku || "",
   };
 }
 

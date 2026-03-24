@@ -35,6 +35,7 @@ const ProductEditPage = () => {
   // Form state
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
+  const [sku, setSku] = useState("");
   const [price, setPrice] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -57,6 +58,7 @@ const ProductEditPage = () => {
     if (existingProduct) {
       setName(existingProduct.name);
       setSlug(existingProduct.slug);
+      setSku(existingProduct.sku || "");
       setPrice(existingProduct.price);
       setOriginalPrice(existingProduct.original_price);
       setCategoryId(existingProduct.category_id || "");
@@ -111,6 +113,7 @@ const ProductEditPage = () => {
         await createProduct.mutateAsync({
           name,
           slug,
+          sku: sku || undefined,
           price,
           original_price: originalPrice,
           category_id: categoryId || undefined,
@@ -131,6 +134,7 @@ const ProductEditPage = () => {
           id: id!,
           name,
           slug,
+          sku: sku || null,
           price,
           original_price: originalPrice,
           category_id: categoryId || null,
@@ -254,6 +258,17 @@ const ProductEditPage = () => {
                   placeholder="camera-ip-hikvision-ds-2cd1023g0e-i"
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="sku">Mã sản phẩm (SKU)</Label>
+              <Input
+                id="sku"
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+                placeholder="DS-2CD1023G0E-I"
+                className="max-w-xs"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

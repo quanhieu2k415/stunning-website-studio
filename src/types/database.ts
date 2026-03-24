@@ -42,6 +42,7 @@ export interface Database {
           legacy_id: number | null;
           name: string;
           slug: string;
+          sku: string | null;
           price: string;
           original_price: string;
           category_id: string | null;

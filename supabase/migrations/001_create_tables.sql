@@ -33,6 +33,7 @@ CREATE TABLE products (
   legacy_id INTEGER UNIQUE,
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
+  sku TEXT,
   price TEXT NOT NULL,
   original_price TEXT NOT NULL,
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,

@@ -29,6 +29,7 @@ export interface ProductDetail extends Product {
   specs: Record<string, string>;
   warranty: string;
   inStock: boolean;
+  sku: string;
 }
 
 export const allProducts: Product[] = [
