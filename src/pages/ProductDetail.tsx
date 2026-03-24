@@ -237,9 +237,9 @@ const ProductDetail = () => {
 
               {hasDescription && (
                 <TabsContent value="description">
-                  <div className="bg-white rounded-xl border p-6 md:p-8">
+                  <div className="py-6">
                     <div
-                      className="prose prose-sm md:prose-base max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-li:text-muted-foreground"
+                      className="prose prose-sm md:prose-base max-w-none prose-headings:text-foreground prose-headings:font-bold prose-h2:text-xl prose-h3:text-lg prose-p:text-muted-foreground prose-p:leading-relaxed prose-strong:text-foreground prose-li:text-muted-foreground prose-ul:space-y-1 prose-a:text-primary"
                       dangerouslySetInnerHTML={{ __html: product.description }}
                     />
                   </div>
@@ -248,7 +248,7 @@ const ProductDetail = () => {
 
               {hasSpecs && (
                 <TabsContent value="specs">
-                  <div className="bg-white rounded-xl border overflow-hidden">
+                  <div className="py-6">
                     <table className="w-full">
                       <tbody>
                         {Object.entries(product.specs).map(([key, value], index) => (
@@ -256,10 +256,10 @@ const ProductDetail = () => {
                             key={key}
                             className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                           >
-                            <td className="px-6 py-3 font-medium text-sm text-foreground w-1/3 border-r">
+                            <td className="px-4 py-3 font-medium text-sm text-foreground w-1/3">
                               {key}
                             </td>
-                            <td className="px-6 py-3 text-sm text-muted-foreground">
+                            <td className="px-4 py-3 text-sm text-muted-foreground">
                               {value}
                             </td>
                           </tr>

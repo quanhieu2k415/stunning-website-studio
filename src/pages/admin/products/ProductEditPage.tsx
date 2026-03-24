@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
 import ImageUploader from "@/components/admin/ImageUploader";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import { useProduct, useCreateProduct, useUpdateProduct } from "@/hooks/useProducts";
 import { useCategories } from "@/hooks/useCategories";
 import { useBrands } from "@/hooks/useBrands";
@@ -328,14 +329,8 @@ const ProductEditPage = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Mô tả</Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Mô tả chi tiết sản phẩm..."
-                rows={4}
-              />
+              <Label>Mô tả chi tiết</Label>
+              <RichTextEditor value={description} onChange={setDescription} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
