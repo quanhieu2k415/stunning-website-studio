@@ -6,6 +6,7 @@ import { useAdminProducts, useDeleteProduct, useUpdateProduct } from "@/hooks/us
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -23,10 +24,32 @@ const ProductListPage = () => {
   const updateProduct = useUpdateProduct();
   const [search, setSearch] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showBulkDelete, setShowBulkDelete] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const filtered = products?.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const allSelected = filtered && filtered.length > 0 && filtered.every((p) => selectedIds.has(p.id));
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered?.map((p) => p.id) || []));
+    }
+  };
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -37,6 +60,25 @@ const ProductListPage = () => {
       toast.error("Không thể xóa sản phẩm");
     }
     setDeleteId(null);
+  };
+
+  const handleBulkDelete = async () => {
+    setIsBulkDeleting(true);
+    let success = 0;
+    let fail = 0;
+    for (const id of selectedIds) {
+      try {
+        await deleteProduct.mutateAsync(id);
+        success++;
+      } catch {
+        fail++;
+      }
+    }
+    setIsBulkDeleting(false);
+    setShowBulkDelete(false);
+    setSelectedIds(new Set());
+    if (success > 0) toast.success(`Đã xóa ${success} sản phẩm`);
+    if (fail > 0) toast.error(`${fail} sản phẩm không thể xóa`);
   };
 
   const toggleFeatured = async (id: string, current: boolean) => {
@@ -62,12 +104,23 @@ const ProductListPage = () => {
       title="Sản phẩm"
       description={`${products?.length || 0} sản phẩm`}
       actions={
-        <Link to="/admin/products/new">
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Thêm sản phẩm
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          {selectedIds.size > 0 && (
+            <Button
+              variant="destructive"
+              onClick={() => setShowBulkDelete(true)}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Xóa {selectedIds.size} sản phẩm
+            </Button>
+          )}
+          <Link to="/admin/products/new">
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="w-4 h-4 mr-2" />
+              Thêm sản phẩm
+            </Button>
+          </Link>
+        </div>
       }
     >
       {/* Search */}
@@ -88,7 +141,13 @@ const ProductListPage = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-16">ID</TableHead>
+              <TableHead className="w-10">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={toggleSelectAll}
+                  aria-label="Chọn tất cả"
+                />
+              </TableHead>
               <TableHead>Sản phẩm</TableHead>
               <TableHead>Danh mục</TableHead>
               <TableHead>Giá</TableHead>
@@ -112,9 +171,13 @@ const ProductListPage = () => {
               </TableRow>
             ) : (
               filtered?.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell className="text-gray-500 text-xs">
-                    {product.legacy_id || "—"}
+                <TableRow key={product.id} className={selectedIds.has(product.id) ? "bg-blue-50" : ""}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedIds.has(product.id)}
+                      onCheckedChange={() => toggleSelect(product.id)}
+                      aria-label={`Chọn ${product.name}`}
+                    />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -199,6 +262,7 @@ const ProductListPage = () => {
         </Table>
       </div>
 
+      {/* Xóa 1 sản phẩm */}
       <ConfirmDialog
         open={!!deleteId}
         onOpenChange={() => setDeleteId(null)}
@@ -206,6 +270,17 @@ const ProductListPage = () => {
         title="Xóa sản phẩm"
         description="Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác."
         confirmText="Xóa"
+        variant="destructive"
+      />
+
+      {/* Xóa nhiều sản phẩm */}
+      <ConfirmDialog
+        open={showBulkDelete}
+        onOpenChange={() => setShowBulkDelete(false)}
+        onConfirm={handleBulkDelete}
+        title={`Xóa ${selectedIds.size} sản phẩm`}
+        description={`Bạn có chắc chắn muốn xóa ${selectedIds.size} sản phẩm đã chọn? Hành động này không thể hoàn tác.`}
+        confirmText={isBulkDeleting ? "Đang xóa..." : "Xóa tất cả"}
         variant="destructive"
       />
     </AdminLayout>
