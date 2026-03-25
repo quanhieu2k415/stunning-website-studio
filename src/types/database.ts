@@ -29,10 +29,12 @@ export interface Database {
           logo_url: string | null;
           is_active: boolean;
           created_at: string;
+          updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["brands"]["Row"], "id" | "created_at"> & {
+        Insert: Omit<Database["public"]["Tables"]["brands"]["Row"], "id" | "created_at" | "updated_at"> & {
           id?: string;
           created_at?: string;
+          updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["brands"]["Insert"]>;
       };

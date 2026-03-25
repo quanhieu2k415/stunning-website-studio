@@ -74,6 +74,8 @@ export function useUpdatePCCategory() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["pc-categories"] });
+      qc.invalidateQueries({ queryKey: ["public-pc-categories"] });
+      qc.invalidateQueries({ queryKey: ["public-prebuilt-configs"] });
     },
   });
 }
@@ -140,6 +142,8 @@ export function useUpdatePrebuiltConfig() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["prebuilt-configs"] });
+      qc.invalidateQueries({ queryKey: ["public-pc-categories"] });
+      qc.invalidateQueries({ queryKey: ["public-prebuilt-configs"] });
     },
   });
 }
@@ -178,6 +182,8 @@ export function useCreatePrebuiltConfig() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["prebuilt-configs"] });
+      qc.invalidateQueries({ queryKey: ["public-pc-categories"] });
+      qc.invalidateQueries({ queryKey: ["public-prebuilt-configs"] });
     },
   });
 }

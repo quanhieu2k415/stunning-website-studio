@@ -216,6 +216,7 @@ CREATE INDEX idx_pc_components_category ON pc_components(category_id);
 CREATE INDEX idx_prebuilt_config_specs_config ON prebuilt_config_specs(config_id);
 CREATE INDEX idx_service_features_service ON service_features(service_id);
 CREATE INDEX idx_site_settings_key ON site_settings(setting_key);
+CREATE INDEX idx_about_expertise_features_expertise ON about_expertise_features(expertise_id);
 
 -- ============================================
 -- Updated_at trigger function

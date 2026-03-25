@@ -60,6 +60,7 @@ export function useUpdateSiteSetting() {
         queryKey: ["site-setting", variables.key],
       });
       queryClient.invalidateQueries({ queryKey: ["site-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["public-site-settings"] });
     },
   });
 }

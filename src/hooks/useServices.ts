@@ -92,6 +92,7 @@ export function useCreateService() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["admin-services"] });
+      qc.invalidateQueries({ queryKey: ["public-services"] });
     },
   });
 }
@@ -144,6 +145,7 @@ export function useUpdateService() {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["admin-services"] });
       qc.invalidateQueries({ queryKey: ["service"] });
+      qc.invalidateQueries({ queryKey: ["public-services"] });
     },
   });
 }
@@ -158,6 +160,7 @@ export function useDeleteService() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["services"] });
       qc.invalidateQueries({ queryKey: ["admin-services"] });
+      qc.invalidateQueries({ queryKey: ["public-services"] });
     },
   });
 }
@@ -200,6 +203,7 @@ export function useUpdateProcessSteps() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["process-steps"] });
+      qc.invalidateQueries({ queryKey: ["public-services"] });
     },
   });
 }

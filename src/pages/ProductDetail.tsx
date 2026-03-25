@@ -6,6 +6,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/Layout";
 import { usePublicProductDetail } from "@/hooks/usePublicData";
 
+// Sanitize HTML: strip dangerous tags/attributes, keep formatting tags
+function sanitizeHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const dangerous = doc.querySelectorAll("script,iframe,object,embed,form,input,link,style,meta");
+  dangerous.forEach((el) => el.remove());
+  doc.querySelectorAll("*").forEach((el) => {
+    for (const attr of Array.from(el.attributes)) {
+      if (attr.name.startsWith("on") || attr.name === "srcdoc") {
+        el.removeAttribute(attr.name);
+      }
+      if (attr.name === "href" && attr.value.trim().toLowerCase().startsWith("javascript:")) {
+        el.removeAttribute(attr.name);
+      }
+    }
+  });
+  return doc.body.innerHTML;
+}
+
 const ProductDetail = () => {
   const { id } = useParams();
   const { data: product, isLoading } = usePublicProductDetail(id || "");
@@ -93,7 +111,7 @@ const ProductDetail = () => {
               {/* Ảnh chính */}
               <div className="relative flex-1 aspect-square bg-white rounded-xl overflow-hidden border group">
                 <img
-                  src={product.images[selectedImage]}
+                  src={product.images[selectedImage] || product.image || "/placeholder.svg"}
                   alt={product.name}
                   className="w-full h-full object-contain p-4"
                 />
@@ -240,7 +258,7 @@ const ProductDetail = () => {
                   <div className="py-6">
                     <div
                       className="prose prose-sm md:prose-base max-w-none prose-headings:text-foreground prose-headings:font-bold prose-h2:text-xl prose-h3:text-lg prose-p:text-muted-foreground prose-p:leading-relaxed prose-strong:text-foreground prose-li:text-muted-foreground prose-ul:space-y-1 prose-a:text-primary"
-                      dangerouslySetInnerHTML={{ __html: product.description }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }}
                     />
                   </div>
                 </TabsContent>

@@ -185,6 +185,7 @@ export function useCreateProduct() {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       queryClient.invalidateQueries({ queryKey: ["public-products"] });
       queryClient.invalidateQueries({ queryKey: ["public-featured-products"] });
+      queryClient.invalidateQueries({ queryKey: ["public-product-detail"] });
     },
   });
 }

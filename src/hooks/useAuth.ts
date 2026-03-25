@@ -24,13 +24,15 @@ export function useAuth() {
     }
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
       setState({
         user: session?.user ?? null,
         session,
         loading: false,
-        error: null,
+        error: error?.message || null,
       });
+    }).catch((err) => {
+      setState((prev) => ({ ...prev, loading: false, error: err?.message || "Lỗi kết nối" }));
     });
 
     // Listen for auth changes
@@ -72,7 +74,11 @@ export function useAuth() {
   }, []);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Ignore signOut errors
+    }
     setState({ user: null, session: null, loading: false, error: null });
   }, []);
 
