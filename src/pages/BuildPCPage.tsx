@@ -3,6 +3,10 @@ import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Cpu, Monitor, HardDrive, Fan, Zap, Package, CircuitBoard, MemoryStick, Phone, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { usePublicPCComponents, usePublicPrebuiltConfigs } from "@/hooks/usePublicData";
+
+const iconMap: Record<string, React.ElementType> = { Cpu, Monitor, HardDrive, Fan, Zap, Package, CircuitBoard, MemoryStick };
+const getIcon = (name: string) => iconMap[name] || Cpu;
 
 // PC Component types
 interface PCComponent {
@@ -161,13 +165,37 @@ const BuildPCPage = () => {
   const [selectedComponents, setSelectedComponents] = useState<Record<string, PCComponent | null>>({});
   const [expandedCategory, setExpandedCategory] = useState<string | null>("cpu");
 
+  const { data: dbCategories } = usePublicPCComponents();
+  const { data: dbConfigs } = usePublicPrebuiltConfigs();
+
+  const isUsingSupabaseData = !!dbCategories;
+
+  const displayCategories: ComponentCategory[] = dbCategories ? dbCategories.map((cat: any) => ({
+    id: cat.slug,
+    name: cat.name,
+    icon: getIcon(cat.icon),
+    required: cat.is_required,
+    options: (cat.components || [])
+      .sort((a: any, b: any) => a.sort_order - b.sort_order)
+      .map((c: any) => ({ id: c.id, name: c.name, price: c.price, specs: c.specs })),
+  })) : componentCategories;
+
+  const displayConfigs = dbConfigs ? dbConfigs.map((cfg: any) => ({
+    id: cfg.slug,
+    name: cfg.name,
+    description: cfg.description || "",
+    price: cfg.price,
+    specs: (cfg.specs || []).sort((a: any, b: any) => a.sort_order - b.sort_order).map((s: any) => s.label),
+    color: cfg.color || "from-blue-500 to-blue-600",
+  })) : preBuiltConfigs;
+
   const totalPrice = useMemo(() => {
     return Object.values(selectedComponents).reduce((sum, comp) => sum + (comp?.price || 0), 0);
   }, [selectedComponents]);
 
   const selectedCount = Object.values(selectedComponents).filter(Boolean).length;
-  const requiredCount = componentCategories.filter(c => c.required).length;
-  const allRequiredSelected = componentCategories.filter(c => c.required).every(c => selectedComponents[c.id]);
+  const requiredCount = displayCategories.filter(c => c.required).length;
+  const allRequiredSelected = displayCategories.filter(c => c.required).every(c => selectedComponents[c.id]);
 
   const handleSelectComponent = (categoryId: string, component: PCComponent | null) => {
     setSelectedComponents(prev => ({ ...prev, [categoryId]: component }));
@@ -178,7 +206,12 @@ const BuildPCPage = () => {
   };
 
   const handleApplyPrebuilt = (configId: string) => {
-    // Apply a pre-built configuration
+    if (isUsingSupabaseData) {
+      // Supabase prebuilt configs use UUID component IDs that don't map directly;
+      // skip auto-apply when using Supabase data
+      return;
+    }
+    // Apply a pre-built configuration (hardcoded IDs only)
     const configs: Record<string, Record<string, string>> = {
       budget: { cpu: "cpu-1", mainboard: "mb-1", ram: "ram-1", gpu: "gpu-3", ssd: "ssd-1", psu: "psu-2", case: "case-1", cooling: "cool-1" },
       mid: { cpu: "cpu-3", mainboard: "mb-3", ram: "ram-2", gpu: "gpu-4", ssd: "ssd-2", psu: "psu-3", case: "case-2", cooling: "cool-3" },
@@ -205,7 +238,7 @@ const BuildPCPage = () => {
         <section className="bg-gradient-primary py-16">
           <div className="container text-center">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4">
-              🎮 Build PC Gaming
+              Build PC Gaming
             </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
               Tự chọn cấu hình PC Gaming theo nhu cầu của bạn hoặc chọn cấu hình có sẵn
@@ -218,7 +251,7 @@ const BuildPCPage = () => {
           <div className="container">
             <h2 className="text-2xl font-bold mb-6 text-center">Cấu Hình Đề Xuất</h2>
             <div className="grid md:grid-cols-3 gap-6">
-              {preBuiltConfigs.map(config => (
+              {displayConfigs.map(config => (
                 <div key={config.id} className="bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-card-hover transition-all">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.color} flex items-center justify-center mb-4`}>
                     <Cpu className="w-6 h-6 text-white" />
@@ -234,10 +267,12 @@ const BuildPCPage = () => {
                     ))}
                   </ul>
                   <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-primary">~{formatPrice(config.price)}₫</span>
-                    <Button size="sm" onClick={() => handleApplyPrebuilt(config.id)}>
-                      Áp dụng
-                    </Button>
+                    <span className="text-xl font-bold text-primary">~{formatPrice(config.price)}</span>
+                    {!isUsingSupabaseData && (
+                      <Button size="sm" onClick={() => handleApplyPrebuilt(config.id)}>
+                        Áp dụng
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -252,8 +287,8 @@ const BuildPCPage = () => {
               {/* Component selector */}
               <div className="lg:col-span-2 space-y-4">
                 <h2 className="text-2xl font-bold mb-6">Chọn Linh Kiện</h2>
-                
-                {componentCategories.map(category => (
+
+                {displayCategories.map(category => (
                   <div key={category.id} className="bg-card rounded-xl border border-border overflow-hidden">
                     <button
                       onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
@@ -291,7 +326,7 @@ const BuildPCPage = () => {
                         </svg>
                       </div>
                     </button>
-                    
+
                     {expandedCategory === category.id && (
                       <div className="border-t border-border p-4 space-y-2 bg-muted/20">
                         {/* Clear selection */}
@@ -304,7 +339,7 @@ const BuildPCPage = () => {
                             Bỏ chọn
                           </button>
                         )}
-                        
+
                         {category.options.map(option => (
                           <button
                             key={option.id}
@@ -332,9 +367,9 @@ const BuildPCPage = () => {
               <div className="lg:col-span-1">
                 <div className="sticky top-24 bg-card rounded-2xl border border-border p-6 shadow-card">
                   <h3 className="text-xl font-bold mb-4">Tóm Tắt Cấu Hình</h3>
-                  
+
                   <div className="space-y-3 mb-6">
-                    {componentCategories.map(category => (
+                    {displayCategories.map(category => (
                       <div key={category.id} className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">{category.name.split(" - ")[0]}</span>
                         {selectedComponents[category.id] ? (
@@ -351,7 +386,7 @@ const BuildPCPage = () => {
                   <div className="border-t border-border pt-4 mb-6">
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="text-muted-foreground">Đã chọn</span>
-                      <span>{selectedCount}/{componentCategories.length} linh kiện</span>
+                      <span>{selectedCount}/{displayCategories.length} linh kiện</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="font-semibold">Tổng tiền:</span>
@@ -359,8 +394,8 @@ const BuildPCPage = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    className="w-full mb-3" 
+                  <Button
+                    className="w-full mb-3"
                     size="lg"
                     disabled={!allRequiredSelected}
                     asChild={allRequiredSelected}
@@ -374,7 +409,7 @@ const BuildPCPage = () => {
                       <span>Vui lòng chọn đủ linh kiện (*)</span>
                     )}
                   </Button>
-                  
+
                   <p className="text-xs text-muted-foreground text-center">
                     Giá có thể thay đổi, liên hệ để được báo giá chính xác
                   </p>

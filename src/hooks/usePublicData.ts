@@ -147,6 +147,96 @@ export function usePublicBrands() {
   });
 }
 
+// Services with features
+export function usePublicServices() {
+  return useQuery({
+    queryKey: ["public-services"],
+    queryFn: async () => {
+      if (!isSupabaseConfigured()) return null;
+      const { data, error } = await supabase
+        .from("services")
+        .select("*, features:service_features(feature, sort_order)")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) return null;
+      return data;
+    },
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+// Process steps
+export function usePublicProcessSteps() {
+  return useQuery({
+    queryKey: ["public-process-steps"],
+    queryFn: async () => {
+      if (!isSupabaseConfigured()) return null;
+      const { data, error } = await supabase
+        .from("process_steps")
+        .select("*")
+        .eq("is_active", true)
+        .order("step_number", { ascending: true });
+      if (error) return null;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// PC Component categories with components
+export function usePublicPCComponents() {
+  return useQuery({
+    queryKey: ["public-pc-categories"],
+    queryFn: async () => {
+      if (!isSupabaseConfigured()) return null;
+      const { data, error } = await supabase
+        .from("pc_component_categories")
+        .select("*, components:pc_components(id, name, price, specs, sort_order)")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) return null;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// Prebuilt configs with specs
+export function usePublicPrebuiltConfigs() {
+  return useQuery({
+    queryKey: ["public-prebuilt-configs"],
+    queryFn: async () => {
+      if (!isSupabaseConfigured()) return null;
+      const { data, error } = await supabase
+        .from("prebuilt_configs")
+        .select("*, specs:prebuilt_config_specs(label, sort_order)")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) return null;
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// About page content from site_settings
+export function usePublicAboutContent() {
+  return useQuery({
+    queryKey: ["public-site-settings", "about_page"],
+    queryFn: async () => {
+      if (!isSupabaseConfigured()) return null;
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("setting_value")
+        .eq("setting_key", "about_page")
+        .single();
+      if (error || !data) return null;
+      return data.setting_value as any;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 // Single product detail
 export function usePublicProductDetail(id: string) {
   return useQuery({

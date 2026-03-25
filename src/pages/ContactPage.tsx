@@ -22,10 +22,20 @@ const ContactPage = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const validate = () => {
+    if (!formData.name.trim()) { toast.error("Vui lòng nhập họ tên"); return false; }
+    if (!formData.phone.trim()) { toast.error("Vui lòng nhập số điện thoại"); return false; }
+    if (!/^[0-9]{9,11}$/.test(formData.phone.replace(/[\s.-]/g, ""))) { toast.error("Số điện thoại không hợp lệ"); return false; }
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) { toast.error("Email không hợp lệ"); return false; }
+    if (!formData.message.trim()) { toast.error("Vui lòng nhập nội dung tin nhắn"); return false; }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/send-email', {
         method: 'POST',

@@ -1,6 +1,10 @@
 import Layout from "@/components/Layout";
 import { Network, Shield, Monitor, Cpu, Users, Wrench, CheckCircle2, Zap, Award, Building2 } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
+import { usePublicAboutContent } from "@/hooks/usePublicData";
+
+const iconMap: Record<string, React.ElementType> = { Network, Shield, Monitor, Cpu, Users, Wrench, Zap, Award, Building2 };
+const getIcon = (name: string) => iconMap[name] || Shield;
 
 const expertise = [
   {
@@ -48,6 +52,20 @@ const clients = [
 ];
 
 const AboutPage = () => {
+  const { data: aboutData } = usePublicAboutContent();
+
+  const displayValues = aboutData?.values?.length ? aboutData.values.map((v: any) => ({
+    icon: getIcon(v.icon),
+    title: v.title,
+    description: v.description,
+  })) : values;
+
+  const displayClients = aboutData?.clients?.length ? aboutData.clients.map((c: any) => ({
+    icon: getIcon(c.icon),
+    title: c.title,
+    description: c.description,
+  })) : clients;
+
   return (
     <Layout>
         {/* Hero */}
@@ -79,7 +97,7 @@ const AboutPage = () => {
                 <span className="text-primary font-semibold">Triết lý hoạt động</span>
               </div>
               <blockquote className="text-2xl md:text-3xl font-medium text-foreground leading-relaxed mb-6">
-                "Một hạ tầng mạng <span className="text-primary">đúng chuẩn – ổn định – lâu dài</span> chính là 
+                "Một hạ tầng mạng <span className="text-primary">đúng chuẩn – ổn định – lâu dài</span> chính là
                 <span className="text-gradient font-bold"> "mạch máu"</span> để mọi hệ thống vận hành hiệu quả."
               </blockquote>
               <p className="text-muted-foreground text-lg">
@@ -143,7 +161,7 @@ const AboutPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {values.map((value) => (
+              {displayValues.map((value) => (
                 <div key={value.title} className="bg-card rounded-2xl p-6 shadow-card border border-border text-center group hover:shadow-card-hover transition-all">
                   <div className="w-14 h-14 rounded-xl bg-gradient-primary flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                     <value.icon className="w-7 h-7 text-white" />
@@ -172,7 +190,7 @@ const AboutPage = () => {
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {clients.map((client) => (
+              {displayClients.map((client) => (
                 <div key={client.title} className="bg-card rounded-2xl p-6 shadow-card border border-border text-center group hover:shadow-card-hover transition-all">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
                     <client.icon className="w-6 h-6 text-primary" />
@@ -194,8 +212,8 @@ const AboutPage = () => {
                 Đội Ngũ Kỹ Sư Trẻ, Năng Động
               </h2>
               <p className="text-white/90 text-lg leading-relaxed mb-8">
-                Với đội ngũ kỹ sư trẻ, am hiểu kỹ thuật và không ngừng cập nhật xu hướng công nghệ mới nhất, 
-                chúng tôi tự tin mang đến những giải pháp tối ưu, hiện đại cho văn phòng, showroom, 
+                Với đội ngũ kỹ sư trẻ, am hiểu kỹ thuật và không ngừng cập nhật xu hướng công nghệ mới nhất,
+                chúng tôi tự tin mang đến những giải pháp tối ưu, hiện đại cho văn phòng, showroom,
                 cửa hàng và doanh nghiệp của bạn.
               </p>
               <div className="flex flex-wrap justify-center gap-4">

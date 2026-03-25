@@ -1,7 +1,11 @@
 import Layout from "@/components/Layout";
-import { Wrench, Headphones, Truck, CheckCircle2, Settings } from "lucide-react";
+import { Wrench, Headphones, Truck, CheckCircle2, Settings, Shield, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { usePublicServices, usePublicProcessSteps } from "@/hooks/usePublicData";
+
+const iconMap: Record<string, React.ElementType> = { Wrench, Headphones, Truck, Settings, Shield, Monitor };
+const getIcon = (name: string) => iconMap[name] || Shield;
 
 const services = [
   {
@@ -39,6 +43,22 @@ const processSteps = [
 ];
 
 const ServicesPage = () => {
+  const { data: dbServices } = usePublicServices();
+  const { data: dbSteps } = usePublicProcessSteps();
+
+  const displayServices = dbServices ? dbServices.map((s: any) => ({
+    icon: getIcon(s.icon),
+    title: s.title,
+    description: s.description,
+    features: s.features?.sort((a: any, b: any) => a.sort_order - b.sort_order).map((f: any) => f.feature) || [],
+  })) : services;
+
+  const displaySteps = dbSteps ? dbSteps.map((s: any) => ({
+    step: s.step_number,
+    title: s.title,
+    description: s.description,
+  })) : processSteps;
+
   return (
     <Layout>
         {/* Hero */}
@@ -57,7 +77,7 @@ const ServicesPage = () => {
         <section className="py-16">
           <div className="container">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {services.map((service) => (
+              {displayServices.map((service) => (
                 <div
                   key={service.title}
                   className="group bg-card rounded-2xl p-8 shadow-card hover:shadow-card-hover transition-all duration-300 border border-border"
@@ -95,23 +115,23 @@ const ServicesPage = () => {
                 Quy trình làm việc
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                5 Bước <span className="text-gradient">Đơn Giản</span>
+                {displaySteps.length} Bước <span className="text-gradient">Đơn Giản</span>
               </h2>
               <p className="text-muted-foreground text-lg">
                 Quy trình làm việc chuyên nghiệp, minh bạch và hiệu quả
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-              {processSteps.map((item, index) => (
+            <div className={`grid grid-cols-1 md:grid-cols-${displaySteps.length} gap-6`}>
+              {displaySteps.map((item, index) => (
                 <div key={item.step} className="relative text-center">
                   <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4 shadow-glow">
                     <span className="text-2xl font-bold text-primary-foreground">{item.step}</span>
                   </div>
                   <h4 className="font-semibold text-foreground mb-2">{item.title}</h4>
                   <p className="text-sm text-muted-foreground">{item.description}</p>
-                  
-                  {index < processSteps.length - 1 && (
+
+                  {index < displaySteps.length - 1 && (
                     <div className="hidden md:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-border" />
                   )}
                 </div>
