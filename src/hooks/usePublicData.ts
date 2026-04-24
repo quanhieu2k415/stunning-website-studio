@@ -246,7 +246,9 @@ export function usePublicProductDetail(id: string) {
 
       if (!isSupabaseConfigured()) return hardcoded || null;
 
-      const numId = parseInt(id);
+      // Use a strict regex — parseInt("123e4567-...") returns 123, not NaN,
+      // so UUIDs starting with digits would wrongly take the legacy_id branch.
+      const numId = /^\d+$/.test(id) ? parseInt(id, 10) : NaN;
       let query;
       if (!isNaN(numId)) {
         query = supabase

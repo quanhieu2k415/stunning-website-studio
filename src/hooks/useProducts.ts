@@ -62,8 +62,10 @@ export function useProduct(id: string) {
   return useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
-      // Try legacy_id first (for public pages)
-      const numId = parseInt(id);
+      // Try legacy_id first (for public pages). Use a strict regex because
+      // parseInt("123e4567-...") returns 123, not NaN — UUIDs starting with
+      // digits would wrongly take the legacy_id branch.
+      const numId = /^\d+$/.test(id) ? parseInt(id, 10) : NaN;
       let query;
 
       if (!isNaN(numId)) {
