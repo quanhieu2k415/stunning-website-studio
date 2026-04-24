@@ -2,6 +2,10 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Module-scoped store: IP -> sorted array of request timestamps (ms).
+// Lives only as long as the serverless instance; see comment above the limiter.
+const rateLimitStore: Map<string, number[]> = new Map();
+
 const ALLOWED_ORIGINS = [
   'https://haiantech.vn',
   'https://www.haiantech.vn',
@@ -61,6 +65,49 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Best-effort rate-limit. Vercel serverless cold starts wipe this Map;
+  // multiple concurrent instances do not share state. For production-grade
+  // limiting move to Upstash Redis or Cloudflare Turnstile.
+  //
+  // x-forwarded-for is typed as string here but Node can hand back string[] in
+  // some adapters — guard defensively.
+  const xffRaw = req.headers['x-forwarded-for'];
+  const xff = Array.isArray(xffRaw) ? xffRaw[0] : xffRaw;
+  const xRealIpRaw = req.headers['x-real-ip'];
+  const xRealIp = Array.isArray(xRealIpRaw) ? xRealIpRaw[0] : xRealIpRaw;
+  const ip =
+    (xff ? xff.split(',')[0].trim() : '') ||
+    (xRealIp ? xRealIp.trim() : '') ||
+    'unknown';
+
+  const nowMs = Date.now();
+  const windowMs = 60 * 60 * 1000; // 1 hour
+  const maxRequests = 5;
+  const windowStart = nowMs - windowMs;
+
+  // Prune stale IPs to bound memory.
+  for (const [key, timestamps] of rateLimitStore) {
+    const fresh = timestamps.filter((t) => t > windowStart);
+    if (fresh.length === 0) {
+      rateLimitStore.delete(key);
+    } else if (fresh.length !== timestamps.length) {
+      rateLimitStore.set(key, fresh);
+    }
+  }
+
+  const recent = (rateLimitStore.get(ip) || []).filter((t) => t > windowStart);
+
+  if (recent.length >= maxRequests) {
+    const oldest = recent[0];
+    const retryAfterSec = Math.max(1, Math.ceil((oldest + windowMs - nowMs) / 1000));
+    res.setHeader('Retry-After', String(retryAfterSec));
+    console.warn('rate limit exceeded', { ip, ua: req.headers['user-agent'] });
+    return res.status(429).json({ error: 'Too many requests' });
+  }
+
+  // Note: we record the attempt AFTER input validation below, so mistyped
+  // submissions don't burn legitimate users' quota.
+
   try {
     const { name, phone, email, subject, message } = req.body;
 
@@ -84,6 +131,10 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     if (typeof message !== 'string' || message.length > 5000) {
       return res.status(400).json({ error: 'Invalid message' });
     }
+
+    // Validation passed — now count this attempt against the per-IP quota.
+    recent.push(nowMs);
+    rateLimitStore.set(ip, recent);
 
     // Escape all user input for HTML to prevent XSS
     const safeName = escapeHtml(name.trim());
