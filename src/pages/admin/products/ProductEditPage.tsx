@@ -153,8 +153,19 @@ const ProductEditPage = () => {
         toast.success("Đã cập nhật sản phẩm");
       }
       navigate("/admin/products");
-    } catch {
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    } catch (err: any) {
+      console.error("Product save error:", err);
+      // Show raw error text only in dev; in prod show a generic message with
+      // an optional error code so the operator can reference logs without
+      // leaking DB schema / constraint details.
+      const detail = import.meta.env.DEV
+        ? err?.message
+        : err?.code
+          ? `Mã lỗi: ${err.code}`
+          : "";
+      toast.error(
+        detail ? `Có lỗi xảy ra. ${detail}` : "Có lỗi xảy ra. Vui lòng thử lại."
+      );
     }
   };
 
