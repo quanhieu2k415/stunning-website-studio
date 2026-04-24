@@ -1,4 +1,19 @@
 -- ============================================
+-- SECURITY MODEL — READ BEFORE EDITING
+-- ============================================
+-- The policies below grant full CRUD on every CMS table and storage bucket to
+-- ANY user with auth.role() = 'authenticated'. They do NOT restrict by user
+-- identity. This is only safe because Supabase email/phone/anonymous/social
+-- self-signup is disabled in the project dashboard, so the only account that
+-- can ever authenticate is the single manually-provisioned admin.
+--
+-- If you re-enable signup, add a second authenticated role, or introduce
+-- non-admin users (e.g. customer accounts), these policies become an open
+-- door — rewrite them against an `admins` table or a JWT claim FIRST.
+-- See /SECURITY.md at the repo root for the full setup checklist and tripwires.
+-- ============================================
+
+-- ============================================
 -- Row Level Security Policies
 -- ============================================
 
