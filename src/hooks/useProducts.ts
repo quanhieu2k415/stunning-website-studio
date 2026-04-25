@@ -2,6 +2,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import type { ProductWithRelations } from "@/types/database";
 
+type VariantInput = { label: string; price: string; original_price?: string | null };
+const toVariantRow = (product_id: string) => (v: VariantInput, i: number) => ({
+  product_id,
+  label: v.label,
+  price: v.price,
+  original_price: v.original_price ?? null,
+  sort_order: i,
+});
+
 // Fetch all products with relations
 export function useProducts(options?: { featured?: boolean; categorySlug?: string; active?: boolean }) {
   return useQuery({
@@ -77,7 +86,8 @@ export function useProduct(id: string) {
             brand:brands(*),
             images:product_images(*, order:sort_order),
             features:product_features(*, order:sort_order),
-            specs:product_specs(*, order:sort_order)
+            specs:product_specs(*, order:sort_order),
+            variants:product_variants(*)
           `)
           .eq("legacy_id", numId)
           .single();
@@ -90,7 +100,8 @@ export function useProduct(id: string) {
             brand:brands(*),
             images:product_images(*),
             features:product_features(*),
-            specs:product_specs(*)
+            specs:product_specs(*),
+            variants:product_variants(*)
           `)
           .eq("id", id)
           .single();
@@ -130,8 +141,9 @@ export function useCreateProduct() {
       features?: string[];
       specs?: { key: string; value: string }[];
       images?: { url: string; is_primary: boolean }[];
+      variants?: { label: string; price: string; original_price?: string | null }[];
     }) => {
-      const { features, specs, images, ...productData } = product;
+      const { features, specs, images, variants, ...productData } = product;
 
       // Insert product
       const { data: newProduct, error: productError } = await supabase
@@ -180,6 +192,13 @@ export function useCreateProduct() {
         if (error) throw error;
       }
 
+      if (variants?.length) {
+        const { error } = await supabase
+          .from("product_variants")
+          .insert(variants.map(toVariantRow(newProduct.id)));
+        if (error) throw error;
+      }
+
       return newProduct;
     },
     onSuccess: () => {
@@ -222,8 +241,9 @@ export function useUpdateProduct() {
       features?: string[];
       specs?: { key: string; value: string }[];
       images?: { url: string; is_primary: boolean }[];
+      variants?: { label: string; price: string; original_price?: string | null }[];
     }) => {
-      const { features, specs, images, ...productData } = updates;
+      const { features, specs, images, variants, ...productData } = updates;
 
       // Update product
       const { error: productError } = await supabase
@@ -276,6 +296,16 @@ export function useUpdateProduct() {
               sort_order: i,
             }))
           );
+          if (error) throw error;
+        }
+      }
+
+      if (variants !== undefined) {
+        await supabase.from("product_variants").delete().eq("product_id", id);
+        if (variants.length) {
+          const { error } = await supabase
+            .from("product_variants")
+            .insert(variants.map(toVariantRow(id)));
           if (error) throw error;
         }
       }

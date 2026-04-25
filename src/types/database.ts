@@ -109,6 +109,22 @@ export interface Database {
         };
         Update: Partial<Database["public"]["Tables"]["product_specs"]["Insert"]>;
       };
+      product_variants: {
+        Row: {
+          id: string;
+          product_id: string;
+          label: string;
+          price: string;
+          original_price: string | null;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["product_variants"]["Row"], "id" | "created_at"> & {
+          id?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["product_variants"]["Insert"]>;
+      };
       services: {
         Row: {
           id: string;
@@ -303,6 +319,7 @@ export type Product = Database["public"]["Tables"]["products"]["Row"];
 export type ProductImage = Database["public"]["Tables"]["product_images"]["Row"];
 export type ProductFeature = Database["public"]["Tables"]["product_features"]["Row"];
 export type ProductSpec = Database["public"]["Tables"]["product_specs"]["Row"];
+export type ProductVariant = Database["public"]["Tables"]["product_variants"]["Row"];
 export type Service = Database["public"]["Tables"]["services"]["Row"];
 export type ServiceFeature = Database["public"]["Tables"]["service_features"]["Row"];
 export type ProcessStep = Database["public"]["Tables"]["process_steps"]["Row"];
@@ -323,4 +340,5 @@ export type ProductWithRelations = Product & {
   images: ProductImage[];
   features: ProductFeature[];
   specs: ProductSpec[];
+  variants?: ProductVariant[];
 };

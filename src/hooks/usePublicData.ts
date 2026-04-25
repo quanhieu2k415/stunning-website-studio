@@ -33,6 +33,15 @@ function mapProduct(p: any): Product {
 // Map Supabase product to frontend ProductDetail type
 function mapProductDetail(p: any): ProductDetail {
   const base = mapProduct(p);
+  const variants = (p.variants || [])
+    .slice()
+    .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    .map((v: any) => ({
+      id: v.id,
+      label: v.label,
+      price: v.price,
+      originalPrice: v.original_price || null,
+    }));
   return {
     ...base,
     images: p.images?.map((img: any) => img.image_url) || [base.image],
@@ -51,6 +60,7 @@ function mapProductDetail(p: any): ProductDetail {
     warranty: p.warranty || "12 tháng",
     inStock: p.in_stock !== false,
     sku: p.sku || "",
+    variants,
   };
 }
 
@@ -257,7 +267,8 @@ export function usePublicProductDetail(id: string) {
             `*, category:categories(slug, name), brand:brands(name),
              images:product_images(image_url, sort_order, is_primary),
              features:product_features(feature, sort_order),
-             specs:product_specs(spec_key, spec_value, sort_order)`
+             specs:product_specs(spec_key, spec_value, sort_order),
+             variants:product_variants(id, label, price, original_price, sort_order)`
           )
           .eq("legacy_id", numId)
           .single();
@@ -268,7 +279,8 @@ export function usePublicProductDetail(id: string) {
             `*, category:categories(slug, name), brand:brands(name),
              images:product_images(image_url, sort_order, is_primary),
              features:product_features(feature, sort_order),
-             specs:product_specs(spec_key, spec_value, sort_order)`
+             specs:product_specs(spec_key, spec_value, sort_order),
+             variants:product_variants(id, label, price, original_price, sort_order)`
           )
           .eq("id", id)
           .single();

@@ -28,6 +28,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { data: product, isLoading } = usePublicProductDetail(id || "");
   const [selectedImage, setSelectedImage] = useState(0);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
 
   if (isLoading) {
     return (
@@ -64,6 +65,23 @@ const ProductDetail = () => {
 
   const hasSpecs = Object.keys(product.specs).length > 0;
   const hasDescription = product.description && product.description.trim().length > 0;
+
+  const variants = product.variants || [];
+  const hasVariants = variants.length > 0;
+  const selectedVariant =
+    variants.find((v) => v.id === selectedVariantId) || variants[0] || null;
+
+  const displayPrice = selectedVariant?.price || product.price;
+  const displayOriginalPrice = selectedVariant
+    ? selectedVariant.originalPrice
+    : product.originalPrice;
+
+  const contactParams = new URLSearchParams({ product: product.name });
+  if (hasVariants && selectedVariant) {
+    contactParams.set("variant", selectedVariant.label);
+    contactParams.set("price", selectedVariant.price);
+  }
+  const contactHref = `/lien-he?${contactParams}`;
 
   return (
     <Layout>
@@ -150,11 +168,38 @@ const ProductDetail = () => {
 
               {/* Giá */}
               <div className="flex items-baseline gap-3 mb-5 pb-5 border-b">
-                <span className="text-2xl font-bold text-red-600">{product.price}₫</span>
-                {product.originalPrice !== product.price && (
-                  <span className="text-base text-muted-foreground line-through">{product.originalPrice}₫</span>
+                <span className="text-2xl font-bold text-red-600">{displayPrice}₫</span>
+                {displayOriginalPrice && displayOriginalPrice !== displayPrice && (
+                  <span className="text-base text-muted-foreground line-through">{displayOriginalPrice}₫</span>
                 )}
               </div>
+
+              {hasVariants && (
+                <div className="mb-5 pb-5 border-b">
+                  <p className="text-sm font-semibold text-foreground mb-3">
+                    Chọn phiên bản:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {variants.map((v) => {
+                      const active = selectedVariant?.id === v.id;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => setSelectedVariantId(v.id)}
+                          className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                            active
+                              ? "border-primary bg-primary/5 text-primary"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          {v.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Features bullet points */}
               {product.features.length > 0 && (
@@ -179,7 +224,7 @@ const ProductDetail = () => {
                   </a>
                 </Button>
                 <Button size="lg" variant="outline" asChild className="flex-1">
-                  <Link to="/lien-he">
+                  <Link to={contactHref}>
                     Liên hệ đặt hàng
                   </Link>
                 </Button>

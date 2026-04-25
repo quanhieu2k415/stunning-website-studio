@@ -2,6 +2,7 @@ import Layout from "@/components/Layout";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const contactInfo = [
@@ -12,12 +13,25 @@ const contactInfo = [
 ];
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    subject: "",
-    message: "",
+  const [searchParams] = useSearchParams();
+  const productName = searchParams.get("product");
+  const variantLabel = searchParams.get("variant");
+  const variantPrice = searchParams.get("price");
+
+  const [formData, setFormData] = useState(() => {
+    if (!productName) {
+      return { name: "", phone: "", email: "", subject: "", message: "" };
+    }
+    const parts = [`Tôi muốn được tư vấn về sản phẩm: ${productName}`];
+    if (variantLabel) parts.push(`Phiên bản: ${variantLabel}`);
+    if (variantPrice) parts.push(`Giá: ${variantPrice}`);
+    return {
+      name: "",
+      phone: "",
+      email: "",
+      subject: "tu-van",
+      message: parts.join("\n"),
+    };
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);

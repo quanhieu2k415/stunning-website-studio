@@ -50,9 +50,15 @@ const ProductEditPage = () => {
   const [features, setFeatures] = useState<string[]>([]);
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>([]);
   const [images, setImages] = useState<{ url: string; is_primary: boolean }[]>([]);
+  const [variants, setVariants] = useState<
+    { label: string; price: string; original_price: string }[]
+  >([]);
   const [newFeature, setNewFeature] = useState("");
   const [newSpecKey, setNewSpecKey] = useState("");
   const [newSpecValue, setNewSpecValue] = useState("");
+  const [newVariantLabel, setNewVariantLabel] = useState("");
+  const [newVariantPrice, setNewVariantPrice] = useState("");
+  const [newVariantOriginal, setNewVariantOriginal] = useState("");
 
   // Load existing data
   useEffect(() => {
@@ -83,6 +89,16 @@ const ProductEditPage = () => {
           is_primary: img.is_primary,
         })) || []
       );
+      setVariants(
+        (existingProduct.variants || [])
+          .slice()
+          .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+          .map((v: any) => ({
+            label: v.label,
+            price: v.price,
+            original_price: v.original_price || "",
+          }))
+      );
     }
   }, [existingProduct]);
 
@@ -109,6 +125,12 @@ const ProductEditPage = () => {
       return;
     }
 
+    const variantsPayload = variants.map((v) => ({
+      label: v.label,
+      price: v.price,
+      original_price: v.original_price || null,
+    }));
+
     try {
       if (isNew) {
         await createProduct.mutateAsync({
@@ -128,6 +150,7 @@ const ProductEditPage = () => {
           features,
           specs,
           images,
+          variants: variantsPayload,
         });
         toast.success("Đã tạo sản phẩm mới");
       } else {
@@ -149,6 +172,7 @@ const ProductEditPage = () => {
           features,
           specs,
           images,
+          variants: variantsPayload,
         });
         toast.success("Đã cập nhật sản phẩm");
       }
@@ -190,6 +214,26 @@ const ProductEditPage = () => {
 
   const removeSpec = (index: number) => {
     setSpecs(specs.filter((_, i) => i !== index));
+  };
+
+  const addVariant = () => {
+    if (newVariantLabel.trim() && newVariantPrice.trim()) {
+      setVariants([
+        ...variants,
+        {
+          label: newVariantLabel.trim(),
+          price: newVariantPrice.trim(),
+          original_price: newVariantOriginal.trim(),
+        },
+      ]);
+      setNewVariantLabel("");
+      setNewVariantPrice("");
+      setNewVariantOriginal("");
+    }
+  };
+
+  const removeVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index));
   };
 
   const addImage = (url: string) => {
@@ -485,6 +529,71 @@ const ProductEditPage = () => {
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
               />
               <Button type="button" variant="outline" onClick={addFeature}>
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Variants — tùy chọn dung lượng / phiên bản */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">
+              Phiên bản / Dung lượng (tùy chọn)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground mb-3">
+              Ví dụ: thẻ nhớ 32GB / 64GB / 128GB, RAM 8GB / 16GB / 32GB. Để
+              trống nếu sản phẩm không có phiên bản.
+            </p>
+            <div className="space-y-2 mb-4">
+              {variants.map((v, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2"
+                >
+                  <GripVertical className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="font-medium text-sm w-32 flex-shrink-0">
+                    {v.label}
+                  </span>
+                  <span className="text-sm text-red-600 w-32 flex-shrink-0">
+                    {v.price}₫
+                  </span>
+                  <span className="text-sm text-muted-foreground line-through flex-1">
+                    {v.original_price ? `${v.original_price}₫` : ""}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(index)}
+                    className="p-1 text-red-400 hover:text-red-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                value={newVariantLabel}
+                onChange={(e) => setNewVariantLabel(e.target.value)}
+                placeholder="Tên (32GB)"
+                className="w-32"
+              />
+              <Input
+                value={newVariantPrice}
+                onChange={(e) => setNewVariantPrice(e.target.value)}
+                placeholder="Giá bán (250.000)"
+                className="w-40"
+              />
+              <Input
+                value={newVariantOriginal}
+                onChange={(e) => setNewVariantOriginal(e.target.value)}
+                placeholder="Giá gốc (tùy chọn)"
+                className="flex-1"
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addVariant())}
+              />
+              <Button type="button" variant="outline" onClick={addVariant}>
                 <Plus className="w-4 h-4" />
               </Button>
             </div>

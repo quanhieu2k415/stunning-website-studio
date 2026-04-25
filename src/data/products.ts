@@ -19,6 +19,13 @@ export interface Product {
   brand: string;
 }
 
+export interface ProductVariantOption {
+  id: string;
+  label: string;
+  price: string;
+  originalPrice: string | null;
+}
+
 export interface ProductDetail extends Product {
   images: string[];
   rating: number;
@@ -30,6 +37,7 @@ export interface ProductDetail extends Product {
   warranty: string;
   inStock: boolean;
   sku: string;
+  variants: ProductVariantOption[];
 }
 
 export const allProducts: Product[] = [
@@ -1363,6 +1371,8 @@ export function getProductDetail(id: string): ProductDetail | undefined {
     specs: {},
     warranty: "12 tháng",
     inStock: true,
+    sku: "",
+    variants: [],
   };
 }
 
