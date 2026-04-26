@@ -69,15 +69,19 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   // multiple concurrent instances do not share state. For production-grade
   // limiting move to Upstash Redis or Cloudflare Turnstile.
   //
-  // x-forwarded-for is typed as string here but Node can hand back string[] in
-  // some adapters — guard defensively.
-  const xffRaw = req.headers['x-forwarded-for'];
-  const xff = Array.isArray(xffRaw) ? xffRaw[0] : xffRaw;
-  const xRealIpRaw = req.headers['x-real-ip'];
-  const xRealIp = Array.isArray(xRealIpRaw) ? xRealIpRaw[0] : xRealIpRaw;
+  // Prefer x-real-ip: Vercel docs call it a "guaranteed correct value for the
+  // IP address of the client making the request." x-forwarded-for is
+  // client-supplied at the leftmost position on many platforms and is trivially
+  // spoofable, so it's only a fallback for non-Vercel deployments / local dev.
+  const headerVal = (h: string) => {
+    const raw = req.headers[h];
+    return Array.isArray(raw) ? raw[0] : raw;
+  };
+  const xRealIp = headerVal('x-real-ip');
+  const xff = headerVal('x-forwarded-for');
   const ip =
-    (xff ? xff.split(',')[0].trim() : '') ||
     (xRealIp ? xRealIp.trim() : '') ||
+    (xff ? xff.split(',')[0].trim() : '') ||
     'unknown';
 
   const nowMs = Date.now();
@@ -133,8 +137,13 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     }
 
     // Validation passed — now count this attempt against the per-IP quota.
-    recent.push(nowMs);
-    rateLimitStore.set(ip, recent);
+    // Re-read from the store before writing: in a single Node instance the
+    // event-loop already serializes us between the check above and here (no
+    // awaits), but re-reading is cheap insurance against future code changes
+    // introducing an await in this gap.
+    const fresh = (rateLimitStore.get(ip) || []).filter((t) => t > windowStart);
+    fresh.push(nowMs);
+    rateLimitStore.set(ip, fresh);
 
     // Escape all user input for HTML to prevent XSS
     const safeName = escapeHtml(name.trim());
