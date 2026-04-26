@@ -301,13 +301,18 @@ export function useUpdateProduct() {
       }
 
       if (variants !== undefined) {
-        await supabase.from("product_variants").delete().eq("product_id", id);
-        if (variants.length) {
-          const { error } = await supabase
-            .from("product_variants")
-            .insert(variants.map(toVariantRow(id)));
-          if (error) throw error;
-        }
+        // Atomic replace via Postgres RPC (migration 005). A client-side
+        // delete-then-insert is non-atomic: a failed insert would leave the
+        // product variant-less and silently break the storefront picker.
+        const { error } = await supabase.rpc("replace_product_variants", {
+          p_product_id: id,
+          p_variants: variants.map((v) => ({
+            label: v.label,
+            price: v.price,
+            original_price: v.original_price ?? null,
+          })),
+        });
+        if (error) throw error;
       }
     },
     onSuccess: () => {
