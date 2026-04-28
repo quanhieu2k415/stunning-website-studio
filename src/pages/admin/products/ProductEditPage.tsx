@@ -179,14 +179,31 @@ const ProductEditPage = () => {
       navigate("/admin/products");
     } catch (err: any) {
       console.error("Product save error:", err);
-      // Show raw error text only in dev; in prod show a generic message with
-      // an optional error code so the operator can reference logs without
-      // leaking DB schema / constraint details.
-      const detail = import.meta.env.DEV
-        ? err?.message
-        : err?.code
-          ? `Mã lỗi: ${err.code}`
-          : "";
+
+      // Map common Postgres / PostgREST codes to actionable Vietnamese
+      // messages. Operators can act on these without needing to read logs.
+      const code = err?.code;
+      const codeMessages: Record<string, string> = {
+        PGRST202:
+          "Hàm replace_product_variants chưa tồn tại. Vui lòng chạy migration 005 trong Supabase.",
+        PGRST205:
+          "Bảng dữ liệu chưa tồn tại. Vui lòng chạy các migration 004/005 trong Supabase.",
+        "42P01":
+          "Bảng dữ liệu chưa tồn tại trong Supabase. Hãy chạy migration tương ứng (004 cho phiên bản).",
+        "23505": "Trùng dữ liệu (slug hoặc SKU đã tồn tại).",
+        "23503": "Tham chiếu không hợp lệ (danh mục hoặc thương hiệu đã bị xóa).",
+        "23502": "Thiếu thông tin bắt buộc.",
+      };
+
+      const mapped = code ? codeMessages[code] : null;
+      const detail = mapped
+        ? mapped
+        : import.meta.env.DEV
+          ? err?.message
+          : code
+            ? `Mã lỗi: ${code}`
+            : "";
+
       toast.error(
         detail ? `Có lỗi xảy ra. ${detail}` : "Có lỗi xảy ra. Vui lòng thử lại."
       );

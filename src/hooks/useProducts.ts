@@ -71,45 +71,36 @@ export function useProduct(id: string) {
   return useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
+      // Variants are fetched separately so a missing product_variants table
+      // (migration 004 not applied) doesn't 400 the entire SELECT and leave
+      // the admin edit form blank.
+      const baseSelect = `
+        *,
+        category:categories(*),
+        brand:brands(*),
+        images:product_images(*, order:sort_order),
+        features:product_features(*, order:sort_order),
+        specs:product_specs(*, order:sort_order)
+      `;
+
       // Try legacy_id first (for public pages). Use a strict regex because
       // parseInt("123e4567-...") returns 123, not NaN — UUIDs starting with
       // digits would wrongly take the legacy_id branch.
       const numId = /^\d+$/.test(id) ? parseInt(id, 10) : NaN;
-      let query;
+      const productQuery = !isNaN(numId)
+        ? supabase.from("products").select(baseSelect).eq("legacy_id", numId).maybeSingle()
+        : supabase.from("products").select(baseSelect).eq("id", id).maybeSingle();
 
-      if (!isNaN(numId)) {
-        query = supabase
-          .from("products")
-          .select(`
-            *,
-            category:categories(*),
-            brand:brands(*),
-            images:product_images(*, order:sort_order),
-            features:product_features(*, order:sort_order),
-            specs:product_specs(*, order:sort_order),
-            variants:product_variants(*)
-          `)
-          .eq("legacy_id", numId)
-          .single();
-      } else {
-        query = supabase
-          .from("products")
-          .select(`
-            *,
-            category:categories(*),
-            brand:brands(*),
-            images:product_images(*),
-            features:product_features(*),
-            specs:product_specs(*),
-            variants:product_variants(*)
-          `)
-          .eq("id", id)
-          .single();
-      }
-
-      const { data, error } = await query;
+      const { data, error } = await productQuery;
       if (error) throw error;
-      return data as ProductWithRelations;
+      if (!data) throw new Error("Product not found");
+
+      const { data: variantsData } = await supabase
+        .from("product_variants")
+        .select("*")
+        .eq("product_id", (data as any).id);
+
+      return { ...data, variants: variantsData || [] } as ProductWithRelations;
     },
     enabled: isSupabaseConfigured() && !!id,
     staleTime: 5 * 60 * 1000,
