@@ -27,7 +27,7 @@ const ProductEditPage = () => {
   const navigate = useNavigate();
   const isNew = !id;
 
-  const { data: existingProduct, isLoading } = useProduct(id || "");
+  const { data: existingProduct, isLoading, error: loadError } = useProduct(id || "");
   const { data: categories } = useCategories(false);
   const { data: brands } = useBrands(false);
   const createProduct = useCreateProduct();
@@ -297,6 +297,49 @@ const ProductEditPage = () => {
       <AdminLayout title="Đang tải...">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (!isNew && loadError) {
+    return (
+      <AdminLayout title="Lỗi tải sản phẩm">
+        <div className="max-w-2xl rounded-lg border border-red-200 bg-red-50 p-6">
+          <h2 className="text-base font-semibold text-red-900 mb-2">
+            Không tải được sản phẩm
+          </h2>
+          <p className="text-sm text-red-800 mb-2">
+            Sản phẩm không hiển thị ra form vì query chính bị lỗi. Mã lỗi:{" "}
+            <code className="font-mono">
+              {(loadError as any)?.code || "unknown"}
+            </code>
+            .
+          </p>
+          <pre className="text-xs text-red-700 whitespace-pre-wrap mb-4">
+            {(loadError as any)?.message || String(loadError)}
+          </pre>
+          <Button variant="outline" onClick={() => navigate("/admin/products")}>
+            Quay lại danh sách
+          </Button>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (!isNew && !existingProduct && !isLoading) {
+    return (
+      <AdminLayout title="Không tìm thấy sản phẩm">
+        <div className="max-w-2xl rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+          <h2 className="text-base font-semibold text-yellow-900 mb-2">
+            Sản phẩm không tồn tại
+          </h2>
+          <p className="text-sm text-yellow-800 mb-4">
+            ID <code className="font-mono">{id}</code> không tìm thấy trong database.
+          </p>
+          <Button variant="outline" onClick={() => navigate("/admin/products")}>
+            Quay lại danh sách
+          </Button>
         </div>
       </AdminLayout>
     );

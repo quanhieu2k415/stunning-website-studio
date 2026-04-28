@@ -71,36 +71,80 @@ export function useProduct(id: string) {
   return useQuery({
     queryKey: ["product", id],
     queryFn: async () => {
-      // Variants are fetched separately so a missing product_variants table
-      // (migration 004 not applied) doesn't 400 the entire SELECT and leave
-      // the admin edit form blank.
-      const baseSelect = `
-        *,
-        category:categories(*),
-        brand:brands(*),
-        images:product_images(*, order:sort_order),
-        features:product_features(*, order:sort_order),
-        specs:product_specs(*, order:sort_order)
-      `;
-
-      // Try legacy_id first (for public pages). Use a strict regex because
-      // parseInt("123e4567-...") returns 123, not NaN — UUIDs starting with
-      // digits would wrongly take the legacy_id branch.
+      // Each relation is fetched as an independent query so a single failure
+      // (missing table, RLS quirk, embed syntax) can't blank out the entire
+      // admin edit form. The base product is the only required fetch; the
+      // others fall back to [] on error and log a warning so we can diagnose.
       const numId = /^\d+$/.test(id) ? parseInt(id, 10) : NaN;
-      const productQuery = !isNaN(numId)
-        ? supabase.from("products").select(baseSelect).eq("legacy_id", numId).maybeSingle()
-        : supabase.from("products").select(baseSelect).eq("id", id).maybeSingle();
+      const baseProductQuery = !isNaN(numId)
+        ? supabase
+            .from("products")
+            .select("*, category:categories(*), brand:brands(*)")
+            .eq("legacy_id", numId)
+            .maybeSingle()
+        : supabase
+            .from("products")
+            .select("*, category:categories(*), brand:brands(*)")
+            .eq("id", id)
+            .maybeSingle();
 
-      const { data, error } = await productQuery;
-      if (error) throw error;
-      if (!data) throw new Error("Product not found");
+      const { data: product, error: productError } = await baseProductQuery;
+      if (productError) throw productError;
+      if (!product) throw new Error("Product not found");
 
-      const { data: variantsData } = await supabase
-        .from("product_variants")
-        .select("*")
-        .eq("product_id", (data as any).id);
+      const productId = (product as any).id;
 
-      return { ...data, variants: variantsData || [] } as ProductWithRelations;
+      const safeFetch = async <T,>(label: string, q: PromiseLike<{ data: T[] | null; error: any }>): Promise<T[]> => {
+        const { data, error } = await q;
+        if (error) {
+          console.warn(`useProduct: failed to load ${label}:`, error);
+          return [];
+        }
+        return data || [];
+      };
+
+      const [imagesData, featuresData, specsData, variantsData] = await Promise.all([
+        safeFetch(
+          "images",
+          supabase
+            .from("product_images")
+            .select("*")
+            .eq("product_id", productId)
+            .order("sort_order", { ascending: true })
+        ),
+        safeFetch(
+          "features",
+          supabase
+            .from("product_features")
+            .select("*")
+            .eq("product_id", productId)
+            .order("sort_order", { ascending: true })
+        ),
+        safeFetch(
+          "specs",
+          supabase
+            .from("product_specs")
+            .select("*")
+            .eq("product_id", productId)
+            .order("sort_order", { ascending: true })
+        ),
+        safeFetch(
+          "variants",
+          supabase
+            .from("product_variants")
+            .select("*")
+            .eq("product_id", productId)
+            .order("sort_order", { ascending: true })
+        ),
+      ]);
+
+      return {
+        ...product,
+        images: imagesData,
+        features: featuresData,
+        specs: specsData,
+        variants: variantsData,
+      } as ProductWithRelations;
     },
     enabled: isSupabaseConfigured() && !!id,
     staleTime: 5 * 60 * 1000,
