@@ -256,40 +256,36 @@ export function usePublicProductDetail(id: string) {
 
       if (!isSupabaseConfigured()) return hardcoded || null;
 
+      // The variants embed is fetched separately so that a missing
+      // product_variants table (migration 004 not yet applied) doesn't 400
+      // the entire query and break every product detail page.
+      const baseSelect = `*, category:categories(slug, name), brand:brands(name),
+        images:product_images(image_url, sort_order, is_primary),
+        features:product_features(feature, sort_order),
+        specs:product_specs(spec_key, spec_value, sort_order)`;
+
       // Use a strict regex — parseInt("123e4567-...") returns 123, not NaN,
       // so UUIDs starting with digits would wrongly take the legacy_id branch.
       const numId = /^\d+$/.test(id) ? parseInt(id, 10) : NaN;
-      let query;
-      if (!isNaN(numId)) {
-        query = supabase
-          .from("products")
-          .select(
-            `*, category:categories(slug, name), brand:brands(name),
-             images:product_images(image_url, sort_order, is_primary),
-             features:product_features(feature, sort_order),
-             specs:product_specs(spec_key, spec_value, sort_order),
-             variants:product_variants(id, label, price, original_price, sort_order)`
-          )
-          .eq("legacy_id", numId)
-          .single();
-      } else {
-        query = supabase
-          .from("products")
-          .select(
-            `*, category:categories(slug, name), brand:brands(name),
-             images:product_images(image_url, sort_order, is_primary),
-             features:product_features(feature, sort_order),
-             specs:product_specs(spec_key, spec_value, sort_order),
-             variants:product_variants(id, label, price, original_price, sort_order)`
-          )
-          .eq("id", id)
-          .single();
+      const productQuery = !isNaN(numId)
+        ? supabase.from("products").select(baseSelect).eq("legacy_id", numId).maybeSingle()
+        : supabase.from("products").select(baseSelect).eq("id", id).maybeSingle();
+
+      const { data, error } = await productQuery;
+      if (error) {
+        console.error("Product detail query failed:", error);
+        return hardcoded || null;
       }
+      if (!data) return hardcoded || null;
 
-      const { data, error } = await query;
-      if (error || !data) return hardcoded || null;
+      // Variants are best-effort. If the table is missing or RLS blocks the
+      // read, the product still renders without a variant picker.
+      const { data: variantsData } = await supabase
+        .from("product_variants")
+        .select("id, label, price, original_price, sort_order")
+        .eq("product_id", (data as any).id);
 
-      return mapProductDetail(data);
+      return mapProductDetail({ ...data, variants: variantsData || [] });
     },
     enabled: !!id,
     staleTime: 60 * 1000,
