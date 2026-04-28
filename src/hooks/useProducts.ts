@@ -301,10 +301,13 @@ export function useUpdateProduct() {
       }
 
       if (variants !== undefined) {
-        // Atomic replace via Postgres RPC (migration 005). A client-side
-        // delete-then-insert is non-atomic: a failed insert would leave the
-        // product variant-less and silently break the storefront picker.
-        const { error } = await supabase.rpc("replace_product_variants", {
+        // Preferred path: atomic replace via Postgres RPC (migration 005).
+        // A client-side delete-then-insert is non-atomic — a failed insert
+        // would leave the product variant-less and break the storefront
+        // picker. We fall back to it only when the RPC is missing
+        // (PGRST202), so a project that hasn't applied migration 005 yet
+        // can still save variants without losing the admin's work.
+        const { error: rpcError } = await supabase.rpc("replace_product_variants", {
           p_product_id: id,
           p_variants: variants.map((v) => ({
             label: v.label,
@@ -312,7 +315,23 @@ export function useUpdateProduct() {
             original_price: v.original_price ?? null,
           })),
         });
-        if (error) throw error;
+
+        if (rpcError) {
+          if (rpcError.code === "PGRST202") {
+            console.warn(
+              "replace_product_variants RPC missing — apply migration 005 in Supabase for atomic variant saves. Falling back to non-atomic delete+insert."
+            );
+            await supabase.from("product_variants").delete().eq("product_id", id);
+            if (variants.length) {
+              const { error } = await supabase
+                .from("product_variants")
+                .insert(variants.map(toVariantRow(id)));
+              if (error) throw error;
+            }
+          } else {
+            throw rpcError;
+          }
+        }
       }
     },
     onSuccess: () => {
