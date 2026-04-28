@@ -253,6 +253,24 @@ const ProductEditPage = () => {
     setVariants(variants.filter((_, i) => i !== index));
   };
 
+  const updateVariant = (
+    index: number,
+    field: "label" | "price" | "original_price",
+    value: string
+  ) => {
+    setVariants(
+      variants.map((v, i) => (i === index ? { ...v, [field]: value } : v))
+    );
+  };
+
+  const updateSpec = (index: number, field: "key" | "value", value: string) => {
+    setSpecs(specs.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
+  };
+
+  const updateFeature = (index: number, value: string) => {
+    setFeatures(features.map((f, i) => (i === index ? value : f)));
+  };
+
   const addImage = (url: string) => {
     setImages([...images, { url, is_primary: images.length === 0 }]);
   };
@@ -527,7 +545,11 @@ const ProductEditPage = () => {
                   className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2"
                 >
                   <GripVertical className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                  <span className="flex-1 text-sm">{feature}</span>
+                  <Input
+                    value={feature}
+                    onChange={(e) => updateFeature(index, e.target.value)}
+                    className="flex-1 bg-white"
+                  />
                   <button
                     type="button"
                     onClick={() => removeFeature(index)}
@@ -571,15 +593,26 @@ const ProductEditPage = () => {
                   className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2"
                 >
                   <GripVertical className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                  <span className="font-medium text-sm w-32 flex-shrink-0">
-                    {v.label}
-                  </span>
-                  <span className="text-sm text-red-600 w-32 flex-shrink-0">
-                    {v.price}₫
-                  </span>
-                  <span className="text-sm text-muted-foreground line-through flex-1">
-                    {v.original_price ? `${v.original_price}₫` : ""}
-                  </span>
+                  <Input
+                    value={v.label}
+                    onChange={(e) => updateVariant(index, "label", e.target.value)}
+                    placeholder="Tên (32GB)"
+                    className="w-32 bg-white"
+                  />
+                  <Input
+                    value={v.price}
+                    onChange={(e) => updateVariant(index, "price", e.target.value)}
+                    placeholder="Giá bán"
+                    className="w-40 bg-white"
+                  />
+                  <Input
+                    value={v.original_price}
+                    onChange={(e) =>
+                      updateVariant(index, "original_price", e.target.value)
+                    }
+                    placeholder="Giá gốc (tùy chọn)"
+                    className="flex-1 bg-white"
+                  />
                   <button
                     type="button"
                     onClick={() => removeVariant(index)}
@@ -630,10 +663,18 @@ const ProductEditPage = () => {
                   className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2"
                 >
                   <GripVertical className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                  <span className="font-medium text-sm w-40 flex-shrink-0">
-                    {spec.key}
-                  </span>
-                  <span className="flex-1 text-sm text-gray-600">{spec.value}</span>
+                  <Input
+                    value={spec.key}
+                    onChange={(e) => updateSpec(index, "key", e.target.value)}
+                    placeholder="Tên thông số"
+                    className="w-40 bg-white"
+                  />
+                  <Input
+                    value={spec.value}
+                    onChange={(e) => updateSpec(index, "value", e.target.value)}
+                    placeholder="Giá trị"
+                    className="flex-1 bg-white"
+                  />
                   <button
                     type="button"
                     onClick={() => removeSpec(index)}
