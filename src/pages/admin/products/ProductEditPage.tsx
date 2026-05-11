@@ -126,11 +126,25 @@ const ProductEditPage = () => {
       return;
     }
 
-    const variantsPayload = variants.map((v) => ({
-      label: v.label,
-      price: v.price,
-      original_price: v.original_price || null,
-    }));
+    // Flush a pending draft from the "add variant" input row so values typed
+    // but not "+"-confirmed still get saved.
+    const pendingDraft =
+      newVariantLabel.trim() && newVariantPrice.trim()
+        ? [{
+            label: newVariantLabel.trim(),
+            price: newVariantPrice.trim(),
+            original_price: newVariantOriginal.trim() || null,
+          }]
+        : [];
+
+    const variantsPayload = [
+      ...variants.map((v) => ({
+        label: v.label,
+        price: v.price,
+        original_price: v.original_price || null,
+      })),
+      ...pendingDraft,
+    ];
 
     try {
       if (isNew) {
