@@ -92,9 +92,9 @@ export function useProduct(id: string) {
       if (productError) throw productError;
       if (!product) throw new Error("Product not found");
 
-      const productId = (product as any).id;
+      const productId = product.id;
 
-      const safeFetch = async <T,>(label: string, q: PromiseLike<{ data: T[] | null; error: any }>): Promise<T[]> => {
+      const safeFetch = async <T,>(label: string, q: PromiseLike<{ data: T[] | null; error: unknown }>): Promise<T[]> => {
         const { data, error } = await q;
         if (error) {
           console.warn(`useProduct: failed to load ${label}:`, error);

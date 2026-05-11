@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Plus, X, GripVertical, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 const ProcessStepsPage = () => {
   const { data: existing, isLoading } = useProcessSteps();
@@ -19,7 +20,7 @@ const ProcessStepsPage = () => {
   }, [existing]);
 
   const handleSave = async () => {
-    try { await updateSteps.mutateAsync(steps); toast.success("Đã cập nhật quy trình"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    try { await updateSteps.mutateAsync(steps); toast.success("Đã cập nhật quy trình"); } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   const addStep = () => setSteps([...steps, { step_number: steps.length + 1, title: "", description: "" }]);

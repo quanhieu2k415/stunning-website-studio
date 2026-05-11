@@ -1,8 +1,15 @@
 import Layout from "@/components/Layout";
+import { useMemo } from "react";
 import { Wrench, Headphones, Truck, CheckCircle2, Settings, Shield, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { usePublicServices, usePublicProcessSteps } from "@/hooks/usePublicData";
+import {
+  usePublicServices,
+  usePublicProcessSteps,
+  type PublicService,
+} from "@/hooks/usePublicData";
+import type { ProcessStep, ServiceFeature } from "@/types/database";
+import { sortBySortOrder } from "@/lib/sort";
 
 const iconMap: Record<string, React.ElementType> = { Wrench, Headphones, Truck, Settings, Shield, Monitor };
 const getIcon = (name: string) => iconMap[name] || Shield;
@@ -46,18 +53,30 @@ const ServicesPage = () => {
   const { data: dbServices } = usePublicServices();
   const { data: dbSteps } = usePublicProcessSteps();
 
-  const displayServices = dbServices ? dbServices.map((s: any) => ({
-    icon: getIcon(s.icon),
-    title: s.title,
-    description: s.description,
-    features: s.features?.sort((a: any, b: any) => a.sort_order - b.sort_order).map((f: any) => f.feature) || [],
-  })) : services;
+  const displayServices = useMemo(
+    () =>
+      dbServices
+        ? dbServices.map((s: PublicService) => ({
+            icon: getIcon(s.icon),
+            title: s.title,
+            description: s.description,
+            features: sortBySortOrder<Pick<ServiceFeature, "feature" | "sort_order">>(s.features).map((f) => f.feature),
+          }))
+        : services,
+    [dbServices]
+  );
 
-  const displaySteps = dbSteps ? dbSteps.map((s: any) => ({
-    step: s.step_number,
-    title: s.title,
-    description: s.description,
-  })) : processSteps;
+  const displaySteps = useMemo(
+    () =>
+      dbSteps
+        ? dbSteps.map((s: ProcessStep) => ({
+            step: s.step_number,
+            title: s.title,
+            description: s.description,
+          }))
+        : processSteps,
+    [dbSteps]
+  );
 
   return (
     <Layout>

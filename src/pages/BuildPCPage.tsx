@@ -3,7 +3,14 @@ import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Cpu, Monitor, HardDrive, Fan, Zap, Package, CircuitBoard, MemoryStick, Phone, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { usePublicPCComponents, usePublicPrebuiltConfigs } from "@/hooks/usePublicData";
+import {
+  usePublicPCComponents,
+  usePublicPrebuiltConfigs,
+  type PublicPCCategory,
+  type PublicPrebuiltConfig,
+} from "@/hooks/usePublicData";
+import type { PCComponent as DbPCComponent, PrebuiltConfigSpec } from "@/types/database";
+import { sortBySortOrder } from "@/lib/sort";
 
 const iconMap: Record<string, React.ElementType> = { Cpu, Monitor, HardDrive, Fan, Zap, Package, CircuitBoard, MemoryStick };
 const getIcon = (name: string) => iconMap[name] || Cpu;
@@ -170,31 +177,42 @@ const BuildPCPage = () => {
 
   const isUsingSupabaseData = !!dbCategories;
 
-  const displayCategories: ComponentCategory[] = dbCategories ? dbCategories.map((cat: any) => ({
-    id: cat.slug,
-    name: cat.name,
-    icon: getIcon(cat.icon),
-    required: cat.is_required,
-    options: (cat.components || [])
-      .sort((a: any, b: any) => a.sort_order - b.sort_order)
-      .map((c: any) => ({ id: c.id, name: c.name, price: c.price, specs: c.specs })),
-  })) : componentCategories;
+  const displayCategories: ComponentCategory[] = useMemo(
+    () =>
+      dbCategories
+        ? dbCategories.map((cat: PublicPCCategory) => ({
+            id: cat.slug,
+            name: cat.name,
+            icon: getIcon(cat.icon),
+            required: cat.is_required,
+            options: sortBySortOrder<Pick<DbPCComponent, "id" | "name" | "price" | "specs" | "sort_order">>(cat.components).map(
+              (c) => ({ id: c.id, name: c.name, price: c.price, specs: c.specs })
+            ),
+          }))
+        : componentCategories,
+    [dbCategories]
+  );
 
-  const displayConfigs = dbConfigs ? dbConfigs.map((cfg: any) => ({
-    id: cfg.slug,
-    name: cfg.name,
-    description: cfg.description || "",
-    price: cfg.price,
-    specs: (cfg.specs || []).sort((a: any, b: any) => a.sort_order - b.sort_order).map((s: any) => s.label),
-    color: cfg.color || "from-blue-500 to-blue-600",
-  })) : preBuiltConfigs;
+  const displayConfigs = useMemo(
+    () =>
+      dbConfigs
+        ? dbConfigs.map((cfg: PublicPrebuiltConfig) => ({
+            id: cfg.slug,
+            name: cfg.name,
+            description: cfg.description || "",
+            price: cfg.price,
+            specs: sortBySortOrder<Pick<PrebuiltConfigSpec, "label" | "sort_order">>(cfg.specs).map((s) => s.label),
+            color: cfg.color || "from-blue-500 to-blue-600",
+          }))
+        : preBuiltConfigs,
+    [dbConfigs]
+  );
 
   const totalPrice = useMemo(() => {
     return Object.values(selectedComponents).reduce((sum, comp) => sum + (comp?.price || 0), 0);
   }, [selectedComponents]);
 
   const selectedCount = Object.values(selectedComponents).filter(Boolean).length;
-  const requiredCount = displayCategories.filter(c => c.required).length;
   const allRequiredSelected = displayCategories.filter(c => c.required).every(c => selectedComponents[c.id]);
 
   const handleSelectComponent = (categoryId: string, component: PCComponent | null) => {

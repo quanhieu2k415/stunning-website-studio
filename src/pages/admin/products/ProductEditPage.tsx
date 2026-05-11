@@ -21,6 +21,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save, Plus, X, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorCode, getErrorMessage } from "@/lib/errors";
+import { sortBySortOrder } from "@/lib/sort";
+import type { ProductVariant } from "@/types/database";
 
 const ProductEditPage = () => {
   const { id } = useParams();
@@ -90,10 +93,8 @@ const ProductEditPage = () => {
         })) || []
       );
       setVariants(
-        (existingProduct.variants || [])
-          .slice()
-          .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-          .map((v: any) => ({
+        sortBySortOrder<ProductVariant>(existingProduct.variants)
+          .map((v) => ({
             label: v.label,
             price: v.price,
             original_price: v.original_price || "",
@@ -177,12 +178,12 @@ const ProductEditPage = () => {
         toast.success("Đã cập nhật sản phẩm");
       }
       navigate("/admin/products");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Product save error:", err);
 
       // Map common Postgres / PostgREST codes to actionable Vietnamese
       // messages. Operators can act on these without needing to read logs.
-      const code = err?.code;
+      const code = getErrorCode(err);
       const codeMessages: Record<string, string> = {
         PGRST202:
           "Hàm replace_product_variants chưa tồn tại. Vui lòng chạy migration 005 trong Supabase.",
@@ -199,7 +200,7 @@ const ProductEditPage = () => {
       const detail = mapped
         ? mapped
         : import.meta.env.DEV
-          ? err?.message
+          ? getErrorMessage(err)
           : code
             ? `Mã lỗi: ${code}`
             : "";
@@ -312,12 +313,12 @@ const ProductEditPage = () => {
           <p className="text-sm text-red-800 mb-2">
             Sản phẩm không hiển thị ra form vì query chính bị lỗi. Mã lỗi:{" "}
             <code className="font-mono">
-              {(loadError as any)?.code || "unknown"}
+              {getErrorCode(loadError) || "unknown"}
             </code>
             .
           </p>
           <pre className="text-xs text-red-700 whitespace-pre-wrap mb-4">
-            {(loadError as any)?.message || String(loadError)}
+            {getErrorMessage(loadError, String(loadError))}
           </pre>
           <Button variant="outline" onClick={() => navigate("/admin/products")}>
             Quay lại danh sách

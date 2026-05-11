@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Pencil, Plus, X } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
+import type { PrebuiltConfigWithSpecs } from "@/hooks/usePCComponents";
 
 const PrebuiltConfigsPage = () => {
   const { data: configs, isLoading } = usePrebuiltConfigs();
@@ -15,9 +17,9 @@ const PrebuiltConfigsPage = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", description: "", price: 0, configSpecs: [] as string[] });
 
-  const startEdit = (config: any) => {
+  const startEdit = (config: PrebuiltConfigWithSpecs) => {
     setEditingId(config.id);
-    setForm({ name: config.name, description: config.description || "", price: config.price, configSpecs: config.specs?.map((s: any) => s.label) || [] });
+    setForm({ name: config.name, description: config.description || "", price: config.price, configSpecs: config.specs?.map((s) => s.label) || [] });
   };
 
   const handleSave = async () => {
@@ -26,7 +28,7 @@ const PrebuiltConfigsPage = () => {
       await updateConfig.mutateAsync({ id: editingId, ...form });
       toast.success("Đã cập nhật cấu hình");
       setEditingId(null);
-    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   return (

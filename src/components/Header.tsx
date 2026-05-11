@@ -33,8 +33,7 @@ const Header = () => {
       const queryString = params.toString();
       navigate(`/san-pham${queryString ? `?${queryString}` : ""}`, { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+  }, [debouncedSearch, location.pathname, navigate, searchParams]);
   
   // Clear search when leaving products page
   useEffect(() => {
@@ -47,7 +46,7 @@ const Header = () => {
         setSearchValue(q);
       }
     }
-  }, [location.pathname]);
+  }, [location.pathname, searchParams, searchValue]);
   const navLinks = [
     { name: "Trang chủ", href: "/" },
     { name: "Sản phẩm", href: "/san-pham" },

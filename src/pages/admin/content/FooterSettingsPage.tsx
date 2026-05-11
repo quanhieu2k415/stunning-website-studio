@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Plus, X } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 interface FooterContent {
   company_description: string;
@@ -35,7 +36,7 @@ const FooterSettingsPage = () => {
   useEffect(() => { if (existing) setForm({ ...defaultFooter, ...existing }); }, [existing]);
 
   const handleSave = async () => {
-    try { await update.mutateAsync({ key: "footer_content", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật Footer"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    try { await update.mutateAsync({ key: "footer_content", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật Footer"); } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   const LinkEditor = ({ title, links, onChange }: { title: string; links: { name: string; href: string }[]; onChange: (links: { name: string; href: string }[]) => void }) => (

@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Plus, X } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 interface ContactInfo {
   phones: string[];
@@ -37,7 +38,7 @@ const ContactSettingsPage = () => {
   useEffect(() => { if (existing) setForm({ ...defaultContact, ...existing }); }, [existing]);
 
   const handleSave = async () => {
-    try { await update.mutateAsync({ key: "contact_info", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật thông tin liên hệ"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    try { await update.mutateAsync({ key: "contact_info", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật thông tin liên hệ"); } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   if (isLoading) return <AdminLayout title="Liên hệ"><div className="flex items-center justify-center min-h-[300px]"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div></AdminLayout>;

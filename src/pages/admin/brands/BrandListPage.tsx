@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 const BrandListPage = () => {
   const { data: brands, isLoading } = useBrands(false);
@@ -29,7 +30,7 @@ const BrandListPage = () => {
         toast.success("Đã tạo thương hiệu");
       }
       setEditBrand(null);
-    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   const handleDelete = async () => {
@@ -37,7 +38,7 @@ const BrandListPage = () => {
     try {
       await deleteBrand.mutateAsync(deleteId);
       toast.success("Đã xóa thương hiệu");
-    } catch (err: any) { toast.error(err?.message || "Không thể xóa"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err, "Không thể xóa")); }
     setDeleteId(null);
   };
 

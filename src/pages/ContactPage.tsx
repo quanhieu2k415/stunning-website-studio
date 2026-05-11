@@ -39,7 +39,7 @@ const ContactPage = () => {
   const validate = () => {
     if (!formData.name.trim()) { toast.error("Vui lòng nhập họ tên"); return false; }
     if (!formData.phone.trim()) { toast.error("Vui lòng nhập số điện thoại"); return false; }
-    if (!/^[0-9]{9,11}$/.test(formData.phone.replace(/[\s.-]/g, ""))) { toast.error("Số điện thoại không hợp lệ"); return false; }
+    if (!/^[0-9\s\-+().]{8,15}$/.test(formData.phone)) { toast.error("Số điện thoại không hợp lệ"); return false; }
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) { toast.error("Email không hợp lệ"); return false; }
     if (!formData.message.trim()) { toast.error("Vui lòng nhập nội dung tin nhắn"); return false; }
     return true;

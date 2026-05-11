@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 const CategoryEditPage = () => {
   const { id } = useParams();
@@ -60,7 +61,7 @@ const CategoryEditPage = () => {
         toast.success("Đã cập nhật danh mục");
       }
       navigate("/admin/categories");
-    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   if (!isNew && isLoading) return <AdminLayout title="Đang tải..."><div className="flex items-center justify-center min-h-[400px]"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div></AdminLayout>;

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 interface HeroContent {
   title: string;
@@ -42,7 +43,7 @@ const HeroSettingsPage = () => {
   useEffect(() => { if (existing) setForm({ ...defaultHero, ...existing }); }, [existing]);
 
   const handleSave = async () => {
-    try { await update.mutateAsync({ key: "hero_content", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật Hero Banner"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    try { await update.mutateAsync({ key: "hero_content", value: form as unknown as Record<string, unknown> }); toast.success("Đã cập nhật Hero Banner"); } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   if (isLoading) return <AdminLayout title="Hero Banner"><div className="flex items-center justify-center min-h-[300px]"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div></AdminLayout>;

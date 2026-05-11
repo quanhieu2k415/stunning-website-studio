@@ -8,7 +8,7 @@ import mayChamCongKhuonMat from "@/assets/products/may-cham-cong-khuon-mat.jpg";
 import baoChay from "@/assets/products/bao-chay.jpg";
 
 export interface Product {
-  id: number;
+  id: number | string;
   name: string;
   price: string;
   originalPrice: string;

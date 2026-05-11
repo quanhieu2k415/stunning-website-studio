@@ -1,7 +1,7 @@
 import Layout from "@/components/Layout";
 import { Network, Shield, Monitor, Cpu, Users, Wrench, CheckCircle2, Zap, Award, Building2 } from "lucide-react";
 import heroBanner from "@/assets/hero-banner.jpg";
-import { usePublicAboutContent } from "@/hooks/usePublicData";
+import { usePublicAboutContent, type AboutPageContent } from "@/hooks/usePublicData";
 
 const iconMap: Record<string, React.ElementType> = { Network, Shield, Monitor, Cpu, Users, Wrench, Zap, Award, Building2 };
 const getIcon = (name: string) => iconMap[name] || Shield;
@@ -51,16 +51,18 @@ const clients = [
   { icon: Cpu, title: "Doanh nghiệp", description: "Hạ tầng IT và giải pháp đồng bộ" },
 ];
 
+type IconCardContent = NonNullable<AboutPageContent["values"]>[number];
+
 const AboutPage = () => {
   const { data: aboutData } = usePublicAboutContent();
 
-  const displayValues = aboutData?.values?.length ? aboutData.values.map((v: any) => ({
+  const displayValues = aboutData?.values?.length ? aboutData.values.map((v: IconCardContent) => ({
     icon: getIcon(v.icon),
     title: v.title,
     description: v.description,
   })) : values;
 
-  const displayClients = aboutData?.clients?.length ? aboutData.clients.map((c: any) => ({
+  const displayClients = aboutData?.clients?.length ? aboutData.clients.map((c: IconCardContent) => ({
     icon: getIcon(c.icon),
     title: c.title,
     description: c.description,

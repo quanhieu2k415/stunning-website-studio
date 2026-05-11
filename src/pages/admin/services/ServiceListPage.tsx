@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 const ServiceListPage = () => {
   const { data: services, isLoading } = useAdminServices();
@@ -15,7 +16,7 @@ const ServiceListPage = () => {
 
   const handleDelete = async () => {
     if (!deleteId) return;
-    try { await deleteService.mutateAsync(deleteId); toast.success("Đã xóa"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    try { await deleteService.mutateAsync(deleteId); toast.success("Đã xóa"); } catch (err: unknown) { toast.error(getErrorMessage(err)); }
     setDeleteId(null);
   };
 

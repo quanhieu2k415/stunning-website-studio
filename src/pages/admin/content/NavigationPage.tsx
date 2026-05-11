@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Plus, X, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 interface NavLink {
   name: string;
@@ -22,7 +23,7 @@ const NavigationPage = () => {
   }, [existing]);
 
   const handleSave = async () => {
-    try { await update.mutateAsync({ key: "nav_links", value: links as unknown as Record<string, unknown> }); toast.success("Đã cập nhật điều hướng"); } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    try { await update.mutateAsync({ key: "nav_links", value: links as unknown as Record<string, unknown> }); toast.success("Đã cập nhật điều hướng"); } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   if (isLoading) return <AdminLayout title="Điều hướng"><div className="flex items-center justify-center min-h-[300px]"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div></AdminLayout>;

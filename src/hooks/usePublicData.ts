@@ -14,44 +14,118 @@ import {
   type Product,
   type ProductDetail,
 } from "@/data/products";
+import { sortBySortOrder } from "@/lib/sort";
+import type {
+  AboutClient,
+  AboutValue,
+  Brand,
+  Category,
+  PCComponent,
+  PCComponentCategory,
+  PrebuiltConfig,
+  PrebuiltConfigSpec,
+  ProcessStep,
+  ProductFeature,
+  ProductImage,
+  ProductSpec,
+  ProductVariant,
+  Service,
+  ServiceFeature,
+} from "@/types/database";
 
-// Map Supabase product to frontend Product type
-function mapProduct(p: any): Product {
+type PublicProductRow = {
+  id: string;
+  legacy_id: number | null;
+  name: string;
+  price: string;
+  original_price: string;
+  image_url?: string | null;
+  badge: string | null;
+  badge_color: string | null;
+  category?: Pick<Category, "slug" | "name"> | null;
+  category_slug?: string | null;
+  brand?: Pick<Brand, "name"> | null;
+  brand_name?: string | null;
+  images?: Pick<ProductImage, "image_url" | "sort_order" | "is_primary">[];
+  rating?: number | string | null;
+  reviews?: number | null;
+  description?: string | null;
+  features?: Pick<ProductFeature, "feature" | "sort_order">[];
+  specs?: Pick<ProductSpec, "spec_key" | "spec_value" | "sort_order">[];
+  warranty?: string | null;
+  in_stock?: boolean | null;
+  sku?: string | null;
+  variants?: Pick<ProductVariant, "id" | "label" | "price" | "original_price" | "sort_order">[];
+};
+
+export type AboutPageContent = {
+  values?: Pick<AboutValue, "icon" | "title" | "description">[];
+  clients?: Pick<AboutClient, "icon" | "title" | "description">[];
+};
+
+export type PublicService = Service & {
+  features?: Pick<ServiceFeature, "feature" | "sort_order">[];
+};
+
+export type PublicPCCategory = PCComponentCategory & {
+  components?: Pick<PCComponent, "id" | "name" | "price" | "specs" | "sort_order">[];
+};
+
+export type PublicPrebuiltConfig = PrebuiltConfig & {
+  specs?: Pick<PrebuiltConfigSpec, "label" | "sort_order">[];
+};
+
+const sortImages = (images: PublicProductRow["images"] = []) =>
+  [...images].sort((a, b) => {
+    if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1;
+    return (a.sort_order ?? 0) - (b.sort_order ?? 0);
+  });
+
+// Map Supabase product to frontend Product type. Returns the entity plus the
+// sorted image list, so callers building ProductDetail can reuse it without
+// re-sorting.
+function mapProductBase(p: PublicProductRow): { product: Product; sortedImages: NonNullable<PublicProductRow["images"]> } {
+  const sortedImages = sortImages(p.images);
   return {
-    id: p.legacy_id ?? p.id,
-    name: p.name,
-    price: p.price,
-    originalPrice: p.original_price,
-    image: p.images?.[0]?.image_url || p.image_url || "/placeholder.svg",
-    badge: p.badge || null,
-    badgeColor: p.badge_color || "bg-red-500",
-    category: p.category?.slug || p.category_slug || "",
-    brand: p.brand?.name || p.brand_name || "",
+    product: {
+      id: p.legacy_id ?? p.id,
+      name: p.name,
+      price: p.price,
+      originalPrice: p.original_price,
+      image: sortedImages[0]?.image_url || p.image_url || "/placeholder.svg",
+      badge: p.badge || null,
+      badgeColor: p.badge_color || "bg-red-500",
+      category: p.category?.slug || p.category_slug || "",
+      brand: p.brand?.name || p.brand_name || "",
+    },
+    sortedImages,
   };
 }
 
+function mapProduct(p: PublicProductRow): Product {
+  return mapProductBase(p).product;
+}
+
 // Map Supabase product to frontend ProductDetail type
-function mapProductDetail(p: any): ProductDetail {
-  const base = mapProduct(p);
-  const variants = (p.variants || [])
-    .slice()
-    .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-    .map((v: any) => ({
-      id: v.id,
-      label: v.label,
-      price: v.price,
-      originalPrice: v.original_price || null,
-    }));
+function mapProductDetail(p: PublicProductRow): ProductDetail {
+  const { product: base, sortedImages } = mapProductBase(p);
+  const variants = sortBySortOrder(p.variants).map((v) => ({
+    id: v.id,
+    label: v.label,
+    price: v.price,
+    originalPrice: v.original_price || null,
+  }));
+  const imageUrls = sortedImages.map((img) => img.image_url);
   return {
     ...base,
-    images: p.images?.map((img: any) => img.image_url) || [base.image],
+    images: imageUrls.length ? imageUrls : [base.image],
     rating: Number(p.rating) || 4.5,
     reviews: p.reviews || 0,
     categoryLabel: p.category?.name || "",
     description: p.description || "",
-    features: p.features?.map((f: any) => f.feature) || [],
+    features: p.features?.map((f) => f.feature) || [],
     specs: (p.specs || []).reduce(
-      (acc: Record<string, string>, s: any) => {
+      (acc: Record<string, string>, s) => {
         acc[s.spec_key] = s.spec_value;
         return acc;
       },
@@ -80,7 +154,7 @@ export function usePublicProducts() {
         .order("sort_order", { ascending: true });
 
       if (error) return hardcodedProducts;
-      return (data || []).map(mapProduct);
+      return ((data || []) as PublicProductRow[]).map(mapProduct);
     },
     staleTime: 60 * 1000,
     placeholderData: hardcodedProducts,
@@ -105,7 +179,7 @@ export function usePublicFeaturedProducts() {
         .limit(4);
 
       if (error) return hardcodedFeatured;
-      return (data || []).map(mapProduct);
+      return ((data || []) as PublicProductRow[]).map(mapProduct);
     },
     staleTime: 60 * 1000,
     placeholderData: hardcodedFeatured,
@@ -128,7 +202,7 @@ export function usePublicCategories() {
       if (error) return hardcodedCategories;
       return [
         { id: "all", name: "Tất cả", icon: "" },
-        ...(data || []).map((c: any) => ({ id: c.slug, name: c.name, icon: c.icon || "" })),
+        ...((data || []) as Category[]).map((c) => ({ id: c.slug, name: c.name, icon: c.icon || "" })),
       ];
     },
     staleTime: 2 * 60 * 1000,
@@ -150,7 +224,7 @@ export function usePublicBrands() {
         .order("name", { ascending: true });
 
       if (error) return hardcodedBrands;
-      return (data || []).map((b: any) => b.name);
+      return ((data || []) as Pick<Brand, "name">[]).map((b) => b.name);
     },
     staleTime: 2 * 60 * 1000,
     placeholderData: hardcodedBrands,
@@ -169,7 +243,7 @@ export function usePublicServices() {
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
       if (error) return null;
-      return data;
+      return data as PublicService[];
     },
     staleTime: 2 * 60 * 1000,
   });
@@ -187,7 +261,7 @@ export function usePublicProcessSteps() {
         .eq("is_active", true)
         .order("step_number", { ascending: true });
       if (error) return null;
-      return data;
+      return data as ProcessStep[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -205,7 +279,7 @@ export function usePublicPCComponents() {
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
       if (error) return null;
-      return data;
+      return data as PublicPCCategory[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -223,7 +297,7 @@ export function usePublicPrebuiltConfigs() {
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
       if (error) return null;
-      return data;
+      return data as PublicPrebuiltConfig[];
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -241,7 +315,7 @@ export function usePublicAboutContent() {
         .eq("setting_key", "about_page")
         .single();
       if (error || !data) return null;
-      return data.setting_value as any;
+      return data.setting_value as AboutPageContent;
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -283,9 +357,12 @@ export function usePublicProductDetail(id: string) {
       const { data: variantsData } = await supabase
         .from("product_variants")
         .select("id, label, price, original_price, sort_order")
-        .eq("product_id", (data as any).id);
+        .eq("product_id", (data as PublicProductRow).id);
 
-      return mapProductDetail({ ...data, variants: variantsData || [] });
+      return mapProductDetail({
+        ...(data as PublicProductRow),
+        variants: (variantsData || []) as PublicProductRow["variants"],
+      });
     },
     enabled: !!id,
     staleTime: 60 * 1000,

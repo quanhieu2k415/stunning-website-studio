@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Plus, X, Save } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errors";
 
 const PCComponentsPage = () => {
   const { data: categories, isLoading } = usePCComponentCategories();
@@ -25,7 +26,7 @@ const PCComponentsPage = () => {
       await updateCategory.mutateAsync({ id: editingId, components });
       toast.success("Đã cập nhật linh kiện");
       setEditingId(null);
-    } catch (err: any) { toast.error(err?.message || "Có lỗi xảy ra"); }
+    } catch (err: unknown) { toast.error(getErrorMessage(err)); }
   };
 
   return (
